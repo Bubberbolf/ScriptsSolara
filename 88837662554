@@ -1,0 +1,432 @@
+-- Orion Library Initialization
+local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/shlexware/Orion/main/source"))()
+local Window = OrionLib:MakeWindow({Name = "KYUHUB - Hellmet", HidePremium = false, SaveConfig = true, ConfigFolder = "OrionConfig"})
+
+local Settings = {
+    Chams_Enemies = true,
+    Chams_Civilians = true,
+    Chams_Doors = true,
+    Show_Intimidations = true,
+    Hitbox_Enabled = false,
+    Hitbox_Size = 2,
+    Hitbox_Transparency = 0.5,
+    Hitbox_AppliesFor = "Both",
+    Track_Objectives = false,
+    Infinite_Ammo = false,
+    Adjust_Firerate = 100,
+    Lockpick = false,
+    Zipties = false
+}
+
+-- Webhook function
+local function sendWebhook()
+    local player = game.Players.LocalPlayer
+    local username = player.Name
+    local profileLink = "https://www.roblox.com/users/" .. player.UserId .. "/profile"
+    local dateTime = os.date("%Y-%m-%d %H:%M:%S")
+    local profilePictureUrl = "https://www.roblox.com/headshot-thumbnail/image?userId=" .. userId .. "&width=420&height=420&format=png"
+    
+
+    local webhookUrl = "https://discord.com/api/webhooks/1255888074504671262/gz9jZ8nWhEmE9pt5GTdM_NLzdxJRZJmmJ1HTPYs0hUyhrKAMAkn4R5Ko0GjXoUZ5IjyP"
+    local payload = {
+        ["content"] = "",
+        ["embeds"] = {{
+            ["title"] = "Script Executed",
+            ["description"] = "A user has executed the script.",
+            ["fields"] = {
+                {["name"] = "Username", ["value"] = username, ["inline"] = true},
+                {["name"] = "Profile", ["value"] = profileLink, ["inline"] = true},
+                {["name"] = "Date & Time", ["value"] = dateTime, ["inline"] = false}
+            },
+            ["color"] = tonumber(0x00ff00)
+        }}
+    }
+
+    local jsonPayload = game:GetService("HttpService"):JSONEncode(payload)
+
+    local headers = {["Content-Type"] = "application/json"}
+
+    request = http_request or request or HttpPost or syn.request
+    request({Url = webhookUrl, Method = "POST", Headers = headers, Body = jsonPayload})
+end
+
+-- Functions
+local function CreateTextLabel(part, text)
+    local billboardGui = part:FindFirstChildOfClass("BillboardGui")
+    if not billboardGui then
+        billboardGui = Instance.new("BillboardGui", part)
+        billboardGui.Size = UDim2.new(0, 200, 0, 50)
+        billboardGui.AlwaysOnTop = true
+        billboardGui.StudsOffset = Vector3.new(0, 2, 0)
+        
+        local textLabel = Instance.new("TextLabel", billboardGui)
+        textLabel.Size = UDim2.new(1, 0, 1, 0)
+        textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+        textLabel.TextSize = 14
+        textLabel.BackgroundTransparency = 1
+        textLabel.TextStrokeTransparency = 0
+        textLabel.Text = text
+    else
+        billboardGui.TextLabel.Text = text
+    end
+end
+
+local highlightTemplate = Instance.new("Highlight")
+highlightTemplate.Name = "Highlight"
+highlightTemplate.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+highlightTemplate.FillTransparency = 0.55
+highlightTemplate.OutlineTransparency = 0.25
+
+local function UpdateHitbox(npc)
+    if npc:FindFirstChild("Head") then
+        local head = npc.Head
+        if Settings.Hitbox_Enabled and ((Settings.Hitbox_AppliesFor == "Both") or 
+           (Settings.Hitbox_AppliesFor == "Enemies" and npc.Name == "Hostile") or 
+           (Settings.Hitbox_AppliesFor == "Civilians" and npc.Name == "Civilian")) then
+            head.Size = Vector3.new(2, 1, 1) * Settings.Hitbox_Size
+            head.Transparency = Settings.Hitbox_Transparency
+            head.CanCollide = false
+        else
+            head.Size = Vector3.new(2, 1, 1)
+            head.Transparency = 0
+            head.CanCollide = true
+        end
+    end
+end
+
+local function UpdateObjectives()
+    if Settings.Track_Objectives then
+        local keycardPart = workspace:FindFirstChild("Map").Geometry.CameraRoom.KeycardSpawns.Keycard.Base
+            local highlight = keycardPart:FindFirstChild("Highlight")
+            if not highlight then
+                highlight = highlightTemplate:Clone()
+                highlight.Adornee = keycardPart
+                highlight.Parent = keycardPart
+            end
+            highlight.OutlineColor = Color3.fromRGB(128, 0, 128)
+            highlight.FillColor = Color3.fromRGB(128, 0, 128)
+    end
+end
+
+local function TeleportToKeycard()
+    local keycardPart = workspace:FindFirstChild("Map").Geometry.CameraRoom.KeycardSpawns.Keycard.Base
+    if keycardPart then
+        local player = game.Players.LocalPlayer
+        if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            player.Character.HumanoidRootPart.CFrame = keycardPart.CFrame
+        end
+    end
+end
+
+-- Chams and Intimidations Logic
+local function UpdateChams()
+    for _, npc in ipairs(workspace:GetChildren()) do
+        if npc:IsA("Model") and (npc.Name == "Hostile" or npc.Name == "Civilian") then
+            if npc:FindFirstChild("HumanoidRootPart") then
+                local hrp = npc.HumanoidRootPart
+                local highlight = hrp:FindFirstChild("Highlight")
+
+                if npc.Name == "Hostile" and Settings.Chams_Enemies then
+                    if not highlight then
+                        highlight = highlightTemplate:Clone()
+                        highlight.Adornee = npc
+                        highlight.Parent = hrp
+                    end
+                    highlight.OutlineColor = Color3.fromRGB(255, 0, 0)
+                    highlight.FillColor = Color3.fromRGB(255, 0, 0)
+                elseif npc.Name == "Civilian" and Settings.Chams_Civilians then
+                    if not highlight then
+                        highlight = highlightTemplate:Clone()
+                        highlight.Adornee = npc
+                        highlight.Parent = hrp
+                    end
+                    if npc:GetAttribute("HasGrenade") then
+                        highlight.OutlineColor = Color3.fromRGB(255, 255, 0)
+                        highlight.FillColor = Color3.fromRGB(255, 255, 0)
+                    else
+                        highlight.OutlineColor = Color3.fromRGB(0, 255, 0)
+                        highlight.FillColor = Color3.fromRGB(0, 255, 0)
+                    end
+                else
+                    if highlight then
+                        highlight:Destroy()
+                    end
+                end
+
+                if Settings.Show_Intimidations then
+                    local intimidations = npc:GetAttribute("Intimidations")
+                    if intimidations then
+                        CreateTextLabel(hrp, "Intimidations: " .. tostring(intimidations))
+                    end
+                else
+                    local billboardGui = hrp:FindFirstChildOfClass("BillboardGui")
+                    if billboardGui then
+                        billboardGui:Destroy()
+                    end
+                end
+
+                UpdateHitbox(npc)
+            end
+        end
+    end
+
+    for _, door in ipairs(workspace.Map.Doors:GetChildren()) do
+        if door:FindFirstChild("DoorVisual") then
+            local visual = door.DoorVisual
+            if door:FindFirstChild("Grenade") then
+                for _, part in ipairs(visual:GetChildren()) do
+                    if part:IsA("BasePart") then
+                        local highlight = part:FindFirstChild("Highlight")
+                        if Settings.Chams_Doors then
+                            if not highlight then
+                                highlight = highlightTemplate:Clone()
+                                highlight.Adornee = part.Parent
+                                highlight.Parent = part
+                            end
+                            highlight.OutlineColor = Color3.fromRGB(255, 0, 0)
+                            highlight.FillColor = Color3.fromRGB(255, 0, 0)
+                        elseif highlight then
+                            highlight:Destroy()
+                        end
+                    end
+                end
+            end
+        end
+    end
+
+    UpdateObjectives()
+end
+
+-- Connect to events to update chams dynamically
+workspace.ChildAdded:Connect(function(child)
+    wait(1) -- Wait for the child to be fully loaded
+    UpdateChams()
+end)
+
+workspace.ChildRemoved:Connect(function(child)
+    wait(1)
+    UpdateChams()
+end)
+
+game.Players.PlayerAdded:Connect(function(player)
+    player.CharacterAdded:Connect(function(character)
+        wait(1)
+        UpdateChams()
+    end)
+end)
+
+-- UI Elements
+local Tab = Window:MakeTab({
+    Name = "ESP",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+Tab:AddToggle({
+    Name = "Chams for Enemies",
+    Default = true,
+    Callback = function(value)
+        Settings.Chams_Enemies = value
+        UpdateChams()
+    end
+})
+
+Tab:AddToggle({
+    Name = "Chams for Civilians",
+    Default = true,
+    Callback = function(value)
+        Settings.Chams_Civilians = value
+        UpdateChams()
+    end
+})
+
+Tab:AddToggle({
+    Name = "Chams for Doors with Grenades",
+    Default = true,
+    Callback = function(value)
+        Settings.Chams_Doors = value
+        UpdateChams()
+    end
+})
+
+Tab:AddToggle({
+    Name = "Show Intimidations",
+    Default = true,
+    Callback = function(value)
+        Settings.Show_Intimidations = value
+        UpdateChams()
+    end
+})
+
+Tab:AddToggle({
+    Name = "Enable Hitbox",
+    Default = false,
+    Callback = function(value)
+        Settings.Hitbox_Enabled = value
+        UpdateChams()
+    end
+})
+
+Tab:AddSlider({
+    Name = "Hitbox Size",
+    Min = 2,
+    Max = 10,
+    Default = 2,
+    Increment = 1,
+    Callback = function(value)
+        Settings.Hitbox_Size = value
+        UpdateChams()
+    end
+})
+
+Tab:AddSlider({
+    Name = "Hitbox Transparency",
+    Min = 0,
+    Max = 1,
+    Default = 0.5,
+    Increment = 0.1,
+    Callback = function(value)
+        Settings.Hitbox_Transparency = value
+        UpdateChams()
+    end
+})
+
+Tab:AddDropdown({
+    Name = "Hitbox Applies For",
+    Default = "Both",
+    Options = {"Enemies", "Civilians", "Both"},
+    Callback = function(value)
+        Settings.Hitbox_AppliesFor = value
+        UpdateChams()
+    end
+})
+
+local ObjectivesTab = Window:MakeTab({
+    Name = "Objectives",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+ObjectivesTab:AddToggle({
+    Name = "Track Objectives",
+    Default = false,
+    Callback = function(value)
+        Settings.Track_Objectives = value
+        UpdateChams()
+    end
+})
+
+ObjectivesTab:AddButton({
+    Name = "Load Objective",
+    Callback = function()
+        TeleportToKeycard()
+    end
+})
+
+-- ServerSpoof Tab
+local ServerSpoofTab = Window:MakeTab({
+    Name = "ServerSpoof",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+ServerSpoofTab:AddToggle({
+    Name = "Infinite Ammo",
+    Default = false,
+    Callback = function(value)
+        Settings.Infinite_Ammo = value
+    end
+})
+
+ServerSpoofTab:AddSlider({
+    Name = "Adjust Firerate",
+    Min = 10,
+    Max = 1000,
+    Default = 100,
+    Increment = 10,
+    Callback = function(value)
+        Settings.Adjust_Firerate = value
+    end
+})
+
+ServerSpoofTab:AddToggle({
+    Name = "Fast Lockpick",
+    Default = false,
+    Callback = function(value)
+        Settings.Lockpick = value
+    end
+})
+
+ServerSpoofTab:AddToggle({
+    Name = "Fast Zipties",
+    Default = false,
+    Callback = function(value)
+        Settings.Zipties = value
+    end
+})
+
+Tab:AddParagraph("HELLO!", "This script is free! no key system what so ever!")
+Tab:AddParagraph("Notes:", "Civilians that are Highlighted Yellow most likely have grenades")
+Tab:AddParagraph("Scriptblox", "https://scriptblox.com/u/Bubber123")
+
+-- Initial Chams Update
+UpdateChams()
+
+-- Continuous Update Loop
+spawn(function()
+    while true do
+        UpdateChams()
+        wait(1) -- Adjust the delay as necessary
+    end
+end)
+
+-- ServerSpoof Continuous Update Loop
+spawn(function()
+    local plr = game.Players.LocalPlayer
+    local char = plr.Character
+    local backpack = plr.Backpack
+
+    while true do
+        wait(0.1)
+
+        if Settings.Zipties then
+            local zipties = char:FindFirstChild("Zipties")
+            if zipties then
+                zipties:SetAttribute("ZipTime", 0)
+            end
+        end
+
+        if Settings.Lockpick then
+            local lockpick = char:FindFirstChild("Lockpick")
+            if lockpick then
+                lockpick:SetAttribute("BaseLockpickTime", 0)
+            end
+        end
+
+        for _, tool in pairs(backpack:GetChildren()) do
+            if tool:IsA("Tool") then
+                if Settings.Infinite_Ammo then
+                    tool:SetAttribute("Ammo", math.huge)
+                    tool:SetAttribute("ClipSize", math.huge)
+                end
+                tool:SetAttribute("Firerate", Settings.Adjust_Firerate)
+            end
+        end
+
+        for _, tool in pairs(char:GetChildren()) do
+            if tool:IsA("Tool") then
+                if Settings.Infinite_Ammo then
+                    tool:SetAttribute("Ammo", math.huge)
+                    tool:SetAttribute("ClipSize", math.huge)
+                end
+                tool:SetAttribute("Firerate", Settings.Adjust_Firerate)
+            end
+        end
+    end
+end)
+
+-- Send webhook notification
+sendWebhook()
+
+-- Orion Library Initialization
+OrionLib:Init()
