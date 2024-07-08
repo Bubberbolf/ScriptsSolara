@@ -119,12 +119,17 @@ local function attackMobsInRange()
 end
 
 local function equipOPArmor()
-    local armorPad = game:GetService("Workspace").ArmorHolder["DESTROYER Armor || Level 0 || [+INF Health]  [+50 Speed]"].Pad
-    local touchInterest = armorPad:FindFirstChildWhichIsA("TouchTransmitter")
-    if touchInterest then
-        firetouchinterest(player.Character.HumanoidRootPart, armorPad, 0)
-        firetouchinterest(player.Character.HumanoidRootPart, armorPad, 1)
-    end
+	local armorPads = {
+		game:GetService("Workspace").ArmorHolder:GetChildren()[10].Pad,
+		game:GetService("Workspace").ArmorHolder["DESTROYER Armor || Level 0 || [+INF Health]  [+50 Speed]"].Pad
+	}
+	for _, pad in ipairs(armorPads) do
+		local touchInterest = pad:FindFirstChildWhichIsA("TouchTransmitter")
+		if touchInterest then
+			firetouchinterest(player.Character.HumanoidRootPart, pad, 0)
+			firetouchinterest(player.Character.HumanoidRootPart, pad, 1)
+		end
+	end
 end
 
 local function bringPlayer(targetPlayer)
@@ -133,17 +138,6 @@ local function bringPlayer(targetPlayer)
     if character and targetCharacter then
         targetCharacter:MoveTo(character.PrimaryPart.Position)
     end
-end
-
-local loopBringEnabled = false
-local function loopBringPlayer(targetPlayer)
-    loopBringEnabled = true
-    spawn(function()
-        while loopBringEnabled do
-            bringPlayer(targetPlayer)
-            wait(0.5) -- Adjust the interval as needed
-        end
-    end)
 end
 
 local function kickPlayer(targetPlayer, reason)
@@ -169,14 +163,12 @@ local function adminControl()
                         local command = string.lower(message)
                         local args = string.split(command, " ")
                         if command == "bring" then
-                            bringPlayer(player)
-                        elseif command == "loopbring" then
-                            loopBringPlayer(player)
-                        elseif command == "stoploopbring" then
-                            loopBringEnabled = false
+                            bringPlayer(owner)
                         elseif args[1] == "kick" then
                             local reason = table.concat(args, " ", 2)
                             kickPlayer(player, reason)
+                        elseif command == "void" then
+                            player.Character.Humanoid.Health = 0
                         elseif string.sub(command, 1, 6) == "notif " then
                             local notifMessage = string.sub(message, 7)
                             OrionLib:MakeNotification({
@@ -260,13 +252,48 @@ Tab:AddButton({
 })
 
 Tab:AddButton({
-    Name = "Kill Nearby all enemies",
+    Name = "Kill Nearby all enemies (SEMI PATCHED)",
     Callback = function()
         killAllEnemies()
     end
 })
 
-Tab:AddParagraph("NOTE:","Might have to spam kill nearby enemies if players are near it.")
+Tab:AddParagraph("NOTE:","semi patched will work on some mobs and some boss but breaks some mobs and some boss.")
+
+Tab:AddButton({
+    Name = "Get All Weapons",
+    Callback = function()
+        local function getAllWeapons()
+            local gold = player.leaderstats.Gold.Value
+        
+            if gold < 1000 then
+                player:Kick("Insufficient gold! Read notes next time you stupid fuck!")
+            else
+                local itemsFolders = {
+                    game:GetService("ReplicatedStorage").GameItems,
+                    game:GetService("ReplicatedStorage").Items.Common,
+                    game:GetService("ReplicatedStorage").Items.Epic,
+                    game:GetService("ReplicatedStorage").Items.Legendary,
+                    game:GetService("ReplicatedStorage").Items.Rare,
+                    game:GetService("ReplicatedStorage").Items.Uncommon,
+                }
+                for _, folder in ipairs(itemsFolders) do
+                    for _, item in ipairs(folder:GetChildren()) do
+                        local args = {
+                            [1] = item.Name
+                        }
+                        game:GetService("ReplicatedStorage").GameRemotes.BuyEvent:FireServer(unpack(args))
+                    end
+                end
+                task.wait(1)
+                player:Kick("All items successfully are in your inventory! Pressing the button again will just kick you and does nothing.")
+            end
+        end
+        getAllWeapons()
+    end
+})
+Tab:AddParagraph("NOTE:","You MUST have more than 1k gold or else you get kicked by protection")
+
 -- Continuous Update Loop
 spawn(function()
     while true do
@@ -276,9 +303,8 @@ spawn(function()
                 wait(1) -- Wait longer if no mobs are found within range
             end
         end
-        wait(0.1) -- Adjust the delay as necessary
+        wait(0.1) -- Adjust the interval as needed
     end
 end)
 
--- Orion Library Initialization
 OrionLib:Init()
