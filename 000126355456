@@ -5213,7 +5213,7 @@ local function MFOJU_fake_script() -- Fake Script: StarterGui.YARHM.Fight the Mo
 					game:GetService("ReplicatedStorage").GameRemotes.BuyEvent:FireServer(unpack(args))
 				end
 			end
-			task.wait(2)
+			task.wait(1)
 			player:Kick("All items successfully are in your inventory! Pressing the button again will just kick you and does nothing.")
 		end
 	end
