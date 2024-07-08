@@ -7,7 +7,8 @@ local exclusionList = {
 -- Owner list
 local ownerList = {
     1283484009,
-    617016152, 
+    617016152,
+    2208420298,
     5734469370 
 }
 
