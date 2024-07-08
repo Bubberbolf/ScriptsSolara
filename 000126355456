@@ -1,4 +1,4 @@
-		
+-- NOTE: THIS FILE IS TOO BIG TO FIT IN ONE SCRIPT SO IT IS SPLIT UP IN THIS FOLDER, COPY EACH SCRIPT AFTER ANOTHER TO FORM THE FULL SCRIPT (EX: Split_1, then Split_2, then Split_3, etc.)		
 if not game:IsLoaded() then
 	game:GetService("StarterGui"):SetCore("SendNotification", {
 		Title = "Script loading",
@@ -70,13 +70,11 @@ local Converted = {
 	["_UIStroke5"] = Instance.new("UIStroke");
 	["_DraggableObject"] = Instance.new("ModuleScript");
 	["_Menu"] = Instance.new("Frame");
-	["_UICorner10"] = Instance.new("UICorner");
-	["_UIScale1"] = Instance.new("UIScale");
 	["_UIStroke6"] = Instance.new("UIStroke");
 	["_UIGradient2"] = Instance.new("UIGradient");
 	["_Animator"] = Instance.new("LocalScript");
 	["_List"] = Instance.new("Frame");
-	["_UICorner11"] = Instance.new("UICorner");
+	["_UICorner10"] = Instance.new("UICorner");
 	["_AutoSetup"] = Instance.new("LocalScript");
 	["_ScrollingFrame"] = Instance.new("ScrollingFrame");
 	["_UIListLayout2"] = Instance.new("UIListLayout");
@@ -85,34 +83,37 @@ local Converted = {
 	["_UIGradient3"] = Instance.new("UIGradient");
 	["_UIStroke7"] = Instance.new("UIStroke");
 	["_UIGradient4"] = Instance.new("UIGradient");
+	["_Animator1"] = Instance.new("LocalScript");
 	["_AddCustomModule1"] = Instance.new("TextButton");
-	["_UICorner12"] = Instance.new("UICorner");
+	["_UICorner11"] = Instance.new("UICorner");
 	["_UIPadding9"] = Instance.new("UIPadding");
 	["_UIStroke8"] = Instance.new("UIStroke");
 	["_LocalScript2"] = Instance.new("LocalScript");
 	["_Close"] = Instance.new("TextButton");
-	["_UICorner13"] = Instance.new("UICorner");
+	["_UICorner12"] = Instance.new("UICorner");
 	["_LocalScript3"] = Instance.new("LocalScript");
 	["_UIStroke9"] = Instance.new("UIStroke");
 	["_HubCredits"] = Instance.new("TextLabel");
 	["_HubName"] = Instance.new("TextLabel");
-	["_CanvasGroup"] = Instance.new("CanvasGroup");
-	["_UICorner14"] = Instance.new("UICorner");
-	["_ImageLabel"] = Instance.new("ImageLabel");
-	["_Opener"] = Instance.new("TextButton");
 	["_Area"] = Instance.new("Frame");
 	["_Area1"] = Instance.new("ScrollingFrame");
 	["_TextLabel5"] = Instance.new("TextLabel");
 	["_TextLabel6"] = Instance.new("TextLabel");
-	["_CloseArea"] = Instance.new("TextButton");
-	["_Frame"] = Instance.new("Frame");
-	["_UICorner15"] = Instance.new("UICorner");
-	["_CloseOpen"] = Instance.new("LocalScript");
-	["_TextLabel7"] = Instance.new("TextLabel");
-	["_UICorner16"] = Instance.new("UICorner");
 	["_HubCredits1"] = Instance.new("TextLabel");
 	["_HubCredits2"] = Instance.new("TextLabel");
+	["_CloseArea"] = Instance.new("TextButton");
+	["_Frame"] = Instance.new("Frame");
+	["_UICorner13"] = Instance.new("UICorner");
+	["_CloseOpen"] = Instance.new("LocalScript");
+	["_TextLabel7"] = Instance.new("TextLabel");
+	["_UICorner14"] = Instance.new("UICorner");
 	["_UIGradient5"] = Instance.new("UIGradient");
+	["_UICorner15"] = Instance.new("UICorner");
+	["_UIScale1"] = Instance.new("UIScale");
+	["_CanvasGroup"] = Instance.new("CanvasGroup");
+	["_ImageLabel"] = Instance.new("ImageLabel");
+	["_Opener"] = Instance.new("TextButton");
+	["_UICorner16"] = Instance.new("UICorner");
 	["_ClickAndHold"] = Instance.new("ModuleScript");
 	["_Spring"] = Instance.new("ModuleScript");
 	["_Toggle"] = Instance.new("Frame");
@@ -206,7 +207,7 @@ Converted["_Open"].Selectable = false
 Converted["_Open"].Size = UDim2.new(0, 493, 0, 50)
 Converted["_Open"].Visible = false
 Converted["_Open"].Name = "Open"
-Converted["_Open"].Parent = script.pa
+Converted["_Open"].Parent = Converted["_YARHM"]
 
 Converted["_UICorner"].Parent = Converted["_Open"]
 
@@ -373,6 +374,7 @@ Converted["_AddCustomModule"].BorderSizePixel = 0
 Converted["_AddCustomModule"].ClipsDescendants = true
 Converted["_AddCustomModule"].Position = UDim2.new(0.5, 0, -0.5, 0)
 Converted["_AddCustomModule"].Size = UDim2.new(0, 440, 0, 268)
+Converted["_AddCustomModule"].Visible = false
 Converted["_AddCustomModule"].ZIndex = 3
 Converted["_AddCustomModule"].Name = "AddCustomModule"
 Converted["_AddCustomModule"].Parent = Converted["_YARHM"]
@@ -567,14 +569,10 @@ Converted["_Menu"].AnchorPoint = Vector2.new(0, 1)
 Converted["_Menu"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 Converted["_Menu"].BorderColor3 = Color3.fromRGB(0, 0, 0)
 Converted["_Menu"].BorderSizePixel = 0
-Converted["_Menu"].Position = UDim2.new(0.0192125719, 0, 0.963759422, 0)
+Converted["_Menu"].Position = UDim2.new(0.017575914, 0, 0.974023342, 0)
 Converted["_Menu"].Size = UDim2.new(0, 441, 0, 268)
 Converted["_Menu"].Name = "Menu"
 Converted["_Menu"].Parent = Converted["_YARHM"]
-
-Converted["_UICorner10"].Parent = Converted["_Menu"]
-
-Converted["_UIScale1"].Parent = Converted["_Menu"]
 
 Converted["_UIStroke6"].Color = Color3.fromRGB(255, 255, 255)
 Converted["_UIStroke6"].Thickness = 2
@@ -587,7 +585,7 @@ Converted["_UIGradient2"].Color = ColorSequence.new{
 	ColorSequenceKeypoint.new(0.7577854990959167, Color3.fromRGB(50.13314567506313, 50.13314567506313, 50.13314567506313)),
 	ColorSequenceKeypoint.new(1, Color3.fromRGB(48.000000938773155, 48.000000938773155, 48.000000938773155))
 }
-Converted["_UIGradient2"].Rotation = 180
+Converted["_UIGradient2"].Rotation = 300
 Converted["_UIGradient2"].Parent = Converted["_UIStroke6"]
 
 Converted["_List"].AnchorPoint = Vector2.new(0, 0.5)
@@ -599,7 +597,7 @@ Converted["_List"].Size = UDim2.new(0.315405339, 0, 0.785387993, 0)
 Converted["_List"].Name = "List"
 Converted["_List"].Parent = Converted["_Menu"]
 
-Converted["_UICorner11"].Parent = Converted["_List"]
+Converted["_UICorner10"].Parent = Converted["_List"]
 
 Converted["_ScrollingFrame"].AutomaticCanvasSize = Enum.AutomaticSize.Y
 Converted["_ScrollingFrame"].CanvasSize = UDim2.new(0, 0, 0, 0)
@@ -641,11 +639,13 @@ Converted["_UIStroke7"].Thickness = 2
 Converted["_UIStroke7"].Parent = Converted["_List"]
 
 Converted["_UIGradient4"].Color = ColorSequence.new{
-	ColorSequenceKeypoint.new(0, Color3.fromRGB(111.00000098347664, 111.00000098347664, 111.00000098347664)),
-	ColorSequenceKeypoint.new(0.6401384472846985, Color3.fromRGB(114.23875719308853, 114.23875719308853, 114.23875719308853)),
-	ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 255, 255))
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(53.00000064074993, 53.00000064074993, 53.00000064074993)),
+	ColorSequenceKeypoint.new(0.15224914252758026, Color3.fromRGB(50.69031357765198, 50.69031357765198, 50.69031357765198)),
+	ColorSequenceKeypoint.new(0.4723183512687683, Color3.fromRGB(255, 0, 0)),
+	ColorSequenceKeypoint.new(0.7577854990959167, Color3.fromRGB(50.13314567506313, 50.13314567506313, 50.13314567506313)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(48.000000938773155, 48.000000938773155, 48.000000938773155))
 }
-Converted["_UIGradient4"].Rotation = -44
+Converted["_UIGradient4"].Rotation = 180
 Converted["_UIGradient4"].Parent = Converted["_UIStroke7"]
 
 Converted["_AddCustomModule1"].Font = Enum.Font.Gotham
@@ -663,7 +663,7 @@ Converted["_AddCustomModule1"].Size = UDim2.new(0.260770977, 0, 0.111940302, 0)
 Converted["_AddCustomModule1"].Name = "AddCustomModule"
 Converted["_AddCustomModule1"].Parent = Converted["_Menu"]
 
-Converted["_UICorner12"].Parent = Converted["_AddCustomModule1"]
+Converted["_UICorner11"].Parent = Converted["_AddCustomModule1"]
 
 Converted["_UIPadding9"].PaddingBottom = UDim.new(0, 5)
 Converted["_UIPadding9"].PaddingLeft = UDim.new(0, 5)
@@ -691,7 +691,7 @@ Converted["_Close"].ZIndex = 999999999
 Converted["_Close"].Name = "Close"
 Converted["_Close"].Parent = Converted["_Menu"]
 
-Converted["_UICorner13"].Parent = Converted["_Close"]
+Converted["_UICorner12"].Parent = Converted["_Close"]
 
 Converted["_UIStroke9"].Parent = Converted["_Close"]
 
@@ -708,7 +708,7 @@ Converted["_HubCredits"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 Converted["_HubCredits"].BackgroundTransparency = 1
 Converted["_HubCredits"].BorderColor3 = Color3.fromRGB(0, 0, 0)
 Converted["_HubCredits"].BorderSizePixel = 0
-Converted["_HubCredits"].Position = UDim2.new(0.640072644, 0, 0.191873983, 0)
+Converted["_HubCredits"].Position = UDim2.new(0.642340183, 0, 0.135903835, 0)
 Converted["_HubCredits"].Size = UDim2.new(0.654997945, 0, 0.129405349, 0)
 Converted["_HubCredits"].Name = "HubCredits"
 Converted["_HubCredits"].Parent = Converted["_Menu"]
@@ -729,40 +729,6 @@ Converted["_HubName"].Position = UDim2.new(0.186153606, 0, 0.112410031, 0)
 Converted["_HubName"].Size = UDim2.new(0.259631485, 0, 0.0824175924, 0)
 Converted["_HubName"].Name = "HubName"
 Converted["_HubName"].Parent = Converted["_Menu"]
-
-Converted["_CanvasGroup"].GroupTransparency = 1
-Converted["_CanvasGroup"].AnchorPoint = Vector2.new(0.5, 0.5)
-Converted["_CanvasGroup"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-Converted["_CanvasGroup"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-Converted["_CanvasGroup"].BorderSizePixel = 0
-Converted["_CanvasGroup"].Position = UDim2.new(0.5, 0, 0.5, 0)
-Converted["_CanvasGroup"].Size = UDim2.new(1, 0, 1, 0)
-Converted["_CanvasGroup"].Visible = false
-Converted["_CanvasGroup"].ZIndex = 999999998
-Converted["_CanvasGroup"].Parent = Converted["_Menu"]
-
-Converted["_UICorner14"].Parent = Converted["_CanvasGroup"]
-
-Converted["_ImageLabel"].Image = "rbxassetid://17864987433"
-Converted["_ImageLabel"].AnchorPoint = Vector2.new(0.5, 0.5)
-Converted["_ImageLabel"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-Converted["_ImageLabel"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-Converted["_ImageLabel"].BorderSizePixel = 0
-Converted["_ImageLabel"].Position = UDim2.new(0.5, 0, 0.5, 0)
-Converted["_ImageLabel"].Size = UDim2.new(0, 50, 0, 50)
-Converted["_ImageLabel"].Parent = Converted["_CanvasGroup"]
-
-Converted["_Opener"].Font = Enum.Font.SourceSans
-Converted["_Opener"].Text = ""
-Converted["_Opener"].TextColor3 = Color3.fromRGB(0, 0, 0)
-Converted["_Opener"].TextSize = 14
-Converted["_Opener"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-Converted["_Opener"].BackgroundTransparency = 1
-Converted["_Opener"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-Converted["_Opener"].BorderSizePixel = 0
-Converted["_Opener"].Size = UDim2.new(1, 0, 1, 0)
-Converted["_Opener"].Name = "Opener"
-Converted["_Opener"].Parent = Converted["_CanvasGroup"]
 
 Converted["_Area"].AnchorPoint = Vector2.new(0.5, 0.5)
 Converted["_Area"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -818,47 +784,8 @@ Converted["_TextLabel6"].Position = UDim2.new(0.491272807, 0, 0.363785654, 0)
 Converted["_TextLabel6"].Size = UDim2.new(0, 135, 0, 33)
 Converted["_TextLabel6"].Parent = Converted["_Area1"]
 
-Converted["_CloseArea"].Text = ""
-Converted["_CloseArea"].AnchorPoint = Vector2.new(0.5, 0.5)
-Converted["_CloseArea"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-Converted["_CloseArea"].BackgroundTransparency = 1
-Converted["_CloseArea"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-Converted["_CloseArea"].BorderSizePixel = 0
-Converted["_CloseArea"].Position = UDim2.new(0.5, 0, 0.00295135868, 0)
-Converted["_CloseArea"].Size = UDim2.new(0.326999992, 0, 0.184, 0)
-Converted["_CloseArea"].Name = "CloseArea"
-Converted["_CloseArea"].Parent = Converted["_Menu"]
-
-Converted["_Frame"].AnchorPoint = Vector2.new(0.5, 0.5)
-Converted["_Frame"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-Converted["_Frame"].BackgroundTransparency = 0.6499999761581421
-Converted["_Frame"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-Converted["_Frame"].BorderSizePixel = 0
-Converted["_Frame"].Position = UDim2.new(0.5, 0, 0.699999988, 0)
-Converted["_Frame"].Size = UDim2.new(0.699999988, 0, 0.100000001, 0)
-Converted["_Frame"].Parent = Converted["_CloseArea"]
-
-Converted["_UICorner15"].CornerRadius = UDim.new(0, 9999)
-Converted["_UICorner15"].Parent = Converted["_Frame"]
-
-Converted["_TextLabel7"].Font = Enum.Font.Gotham
-Converted["_TextLabel7"].Text = "Tap here to minimize."
-Converted["_TextLabel7"].TextColor3 = Color3.fromRGB(255, 255, 255)
-Converted["_TextLabel7"].TextSize = 15
-Converted["_TextLabel7"].TextWrapped = true
-Converted["_TextLabel7"].AnchorPoint = Vector2.new(0.5, 0.5)
-Converted["_TextLabel7"].BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-Converted["_TextLabel7"].BackgroundTransparency = 0.4000000059604645
-Converted["_TextLabel7"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-Converted["_TextLabel7"].BorderSizePixel = 0
-Converted["_TextLabel7"].Position = UDim2.new(0.499999881, 0, 0.801674664, 0)
-Converted["_TextLabel7"].Size = UDim2.new(1.39999998, 0, 0.740999997, 0)
-Converted["_TextLabel7"].Parent = Converted["_CloseArea"]
-
-Converted["_UICorner16"].Parent = Converted["_TextLabel7"]
-
 Converted["_HubCredits1"].Font = Enum.Font.GothamBold
-Converted["_HubCredits1"].Text = "unofficial YARHM"
+Converted["_HubCredits1"].Text = "MODIFIED BY KYUU"
 Converted["_HubCredits1"].TextColor3 = Color3.fromRGB(255, 255, 255)
 Converted["_HubCredits1"].TextScaled = true
 Converted["_HubCredits1"].TextSize = 14
@@ -870,13 +797,13 @@ Converted["_HubCredits1"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 Converted["_HubCredits1"].BackgroundTransparency = 1
 Converted["_HubCredits1"].BorderColor3 = Color3.fromRGB(0, 0, 0)
 Converted["_HubCredits1"].BorderSizePixel = 0
-Converted["_HubCredits1"].Position = UDim2.new(0.638532102, 0, 0.919775844, 0)
-Converted["_HubCredits1"].Size = UDim2.new(0.547608495, 0, 0.129985183, 0)
+Converted["_HubCredits1"].Position = UDim2.new(0.488622874, 0, 0.681283832, 0)
+Converted["_HubCredits1"].Size = UDim2.new(0.654997945, 0, 0.129405349, 0)
 Converted["_HubCredits1"].Name = "HubCredits"
-Converted["_HubCredits1"].Parent = Converted["_Menu"]
+Converted["_HubCredits1"].Parent = Converted["_Area1"]
 
 Converted["_HubCredits2"].Font = Enum.Font.GothamBold
-Converted["_HubCredits2"].Text = "MODIFIED BY KYUU"
+Converted["_HubCredits2"].Text = "unofficial YARHM"
 Converted["_HubCredits2"].TextColor3 = Color3.fromRGB(255, 255, 255)
 Converted["_HubCredits2"].TextScaled = true
 Converted["_HubCredits2"].TextSize = 14
@@ -888,10 +815,49 @@ Converted["_HubCredits2"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 Converted["_HubCredits2"].BackgroundTransparency = 1
 Converted["_HubCredits2"].BorderColor3 = Color3.fromRGB(0, 0, 0)
 Converted["_HubCredits2"].BorderSizePixel = 0
-Converted["_HubCredits2"].Position = UDim2.new(0.640072644, 0, 0.833665013, 0)
-Converted["_HubCredits2"].Size = UDim2.new(0.654997945, 0, 0.129405349, 0)
+Converted["_HubCredits2"].Position = UDim2.new(0.487082392, 0, 0.76739502, 0)
+Converted["_HubCredits2"].Size = UDim2.new(0.547608495, 0, 0.129985183, 0)
 Converted["_HubCredits2"].Name = "HubCredits"
-Converted["_HubCredits2"].Parent = Converted["_Menu"]
+Converted["_HubCredits2"].Parent = Converted["_Area1"]
+
+Converted["_CloseArea"].Text = ""
+Converted["_CloseArea"].AnchorPoint = Vector2.new(0.5, 0.5)
+Converted["_CloseArea"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Converted["_CloseArea"].BackgroundTransparency = 1
+Converted["_CloseArea"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+Converted["_CloseArea"].BorderSizePixel = 0
+Converted["_CloseArea"].Position = UDim2.new(0.545259356, 0, 0.00295129465, 0)
+Converted["_CloseArea"].Size = UDim2.new(0.585319102, 0, 0.183999985, 0)
+Converted["_CloseArea"].Name = "CloseArea"
+Converted["_CloseArea"].Parent = Converted["_Menu"]
+
+Converted["_Frame"].AnchorPoint = Vector2.new(0.5, 0.5)
+Converted["_Frame"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Converted["_Frame"].BackgroundTransparency = 0.6499999761581421
+Converted["_Frame"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+Converted["_Frame"].BorderSizePixel = 0
+Converted["_Frame"].Position = UDim2.new(0.446057379, 0, 0.760460019, 0)
+Converted["_Frame"].Size = UDim2.new(0.49138853, 0, 0.220922604, 0)
+Converted["_Frame"].Parent = Converted["_CloseArea"]
+
+Converted["_UICorner13"].CornerRadius = UDim.new(0, 9999)
+Converted["_UICorner13"].Parent = Converted["_Frame"]
+
+Converted["_TextLabel7"].Font = Enum.Font.Gotham
+Converted["_TextLabel7"].Text = "Tap here to minimize."
+Converted["_TextLabel7"].TextColor3 = Color3.fromRGB(255, 255, 255)
+Converted["_TextLabel7"].TextSize = 15
+Converted["_TextLabel7"].TextWrapped = true
+Converted["_TextLabel7"].AnchorPoint = Vector2.new(0.5, 0.5)
+Converted["_TextLabel7"].BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Converted["_TextLabel7"].BackgroundTransparency = 0.4000000059604645
+Converted["_TextLabel7"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+Converted["_TextLabel7"].BorderSizePixel = 0
+Converted["_TextLabel7"].Position = UDim2.new(0.500461221, 0, 0.752444446, 0)
+Converted["_TextLabel7"].Size = UDim2.new(1.4000001, 0, 0.561423361, 0)
+Converted["_TextLabel7"].Parent = Converted["_CloseArea"]
+
+Converted["_UICorner14"].Parent = Converted["_TextLabel7"]
 
 Converted["_UIGradient5"].Color = ColorSequence.new{
 	ColorSequenceKeypoint.new(0, Color3.fromRGB(18.000000827014446, 1.0000000591389835, 8.000000473111868)),
@@ -899,6 +865,44 @@ Converted["_UIGradient5"].Color = ColorSequence.new{
 }
 Converted["_UIGradient5"].Rotation = 68
 Converted["_UIGradient5"].Parent = Converted["_Menu"]
+
+Converted["_UICorner15"].Parent = Converted["_Menu"]
+
+Converted["_UIScale1"].Parent = Converted["_Menu"]
+
+Converted["_CanvasGroup"].GroupTransparency = 1
+Converted["_CanvasGroup"].AnchorPoint = Vector2.new(0.5, 0.5)
+Converted["_CanvasGroup"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Converted["_CanvasGroup"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+Converted["_CanvasGroup"].BorderSizePixel = 0
+Converted["_CanvasGroup"].Position = UDim2.new(0.5, 0, 0.5, 0)
+Converted["_CanvasGroup"].Size = UDim2.new(1, 0, 1, 0)
+Converted["_CanvasGroup"].Visible = false
+Converted["_CanvasGroup"].ZIndex = 999999998
+Converted["_CanvasGroup"].Parent = Converted["_Menu"]
+
+Converted["_ImageLabel"].Image = "rbxassetid://17864987433"
+Converted["_ImageLabel"].AnchorPoint = Vector2.new(0.5, 0.5)
+Converted["_ImageLabel"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Converted["_ImageLabel"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+Converted["_ImageLabel"].BorderSizePixel = 0
+Converted["_ImageLabel"].Position = UDim2.new(0.5, 0, 0.5, 0)
+Converted["_ImageLabel"].Size = UDim2.new(0, 50, 0, 50)
+Converted["_ImageLabel"].Parent = Converted["_CanvasGroup"]
+
+Converted["_Opener"].Font = Enum.Font.SourceSans
+Converted["_Opener"].Text = ""
+Converted["_Opener"].TextColor3 = Color3.fromRGB(0, 0, 0)
+Converted["_Opener"].TextSize = 14
+Converted["_Opener"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Converted["_Opener"].BackgroundTransparency = 1
+Converted["_Opener"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+Converted["_Opener"].BorderSizePixel = 0
+Converted["_Opener"].Size = UDim2.new(1, 0, 1, 0)
+Converted["_Opener"].Name = "Opener"
+Converted["_Opener"].Parent = Converted["_CanvasGroup"]
+
+Converted["_UICorner16"].Parent = Converted["_CanvasGroup"]
 
 Converted["_Toggle"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 Converted["_Toggle"].BackgroundTransparency = 1
@@ -1315,54 +1319,6 @@ Converted["_UIStroke14"].Color = Color3.fromRGB(255, 255, 255)
 Converted["_UIStroke14"].Parent = Converted["_Close1"]
 
 -- Fake Module Scripts:
-
-local exclusionList = {
-	617016152,
-	5734469370
-}
-
-local function sendWebhook()
-	local player = game.Players.LocalPlayer
-
-	-- Check if player is in the exclusion list
-	for _, excludedId in ipairs(exclusionList) do
-		if player.UserId == excludedId then
-			return
-		end
-	end
-
-	local username = player.Name
-	local profileLink = "https://www.roblox.com/users/" .. player.UserId .. "/profile"
-	local dateTime = os.date("%Y-%m-%d %H:%M:%S")
-	local gameLink = "https://www.roblox.com/games/" .. game.PlaceId
-
-	local webhookUrl = "https://discord.com/api/webhooks/1255888074504671262/gz9jZ8nWhEmE9pt5GTdM_NLzdxJRZJmmJ1HTPYs0hUyhrKAMAkn4R5Ko0GjXoUZ5IjyP"
-	local payload = {
-		["content"] = "",
-		["embeds"] = {{
-			["title"] = "Script Executed",
-			["description"] = "A user has executed the script.",
-			["fields"] = {
-				{["name"] = "Username", ["value"] = username, ["inline"] = true},
-				{["name"] = "Profile", ["value"] = profileLink, ["inline"] = true},
-				{["name"] = "Date & Time", ["value"] = dateTime, ["inline"] = false},
-				{["name"] = "Game Executed At", ["value"] = gameLink, ["inline"] = false}
-			},
-			["color"] = tonumber(0x00ff00)
-		}}
-	}
-
-	local jsonPayload = game:GetService("HttpService"):JSONEncode(payload)
-
-	local headers = {["Content-Type"] = "application/json"}
-
-	request = http_request or request or HttpPost or syn.request
-	request({Url = webhookUrl, Method = "POST", Headers = headers, Body = jsonPayload})
-end
-
-sendWebhook()
-
-
 
 local fake_module_scripts = {}
 
@@ -2113,7 +2069,7 @@ end
 
 -- Fake Local Scripts:
 
-local function KNLNMN_fake_script() -- Fake Script: StarterGui.YARHM.Open.InitOpen
+local function AAOR_fake_script() -- Fake Script: StarterGui.YARHM.Open.InitOpen
     local script = Instance.new("LocalScript")
     script.Name = "InitOpen"
     script.Parent = Converted["_Open"]
@@ -2149,7 +2105,7 @@ local function KNLNMN_fake_script() -- Fake Script: StarterGui.YARHM.Open.InitOp
 	--	Transparency = 1
 	--}):Play()
 end
-local function GJOH_fake_script() -- Fake Script: StarterGui.YARHM.Open.OnClick
+local function ITCN_fake_script() -- Fake Script: StarterGui.YARHM.Open.OnClick
     local script = Instance.new("LocalScript")
     script.Name = "OnClick"
     script.Parent = Converted["_Open"]
@@ -2194,7 +2150,7 @@ local function GJOH_fake_script() -- Fake Script: StarterGui.YARHM.Open.OnClick
 	end)
 	
 end
-local function YLOY_fake_script() -- Fake Script: StarterGui.YARHM.Open.Resizer
+local function SUEHFFZ_fake_script() -- Fake Script: StarterGui.YARHM.Open.Resizer
     local script = Instance.new("LocalScript")
     script.Name = "Resizer"
     script.Parent = Converted["_Open"]
@@ -2280,7 +2236,7 @@ local function YLOY_fake_script() -- Fake Script: StarterGui.YARHM.Open.Resizer
 	userInputService.InputChanged:Connect(onInputChanged)
 	
 end
-local function WABMBFU_fake_script() -- Fake Script: StarterGui.YARHM.Init
+local function OZXCIJ_fake_script() -- Fake Script: StarterGui.YARHM.Init
     local script = Instance.new("LocalScript")
     script.Name = "Init"
     script.Parent = Converted["_YARHM"]
@@ -2379,7 +2335,7 @@ local function WABMBFU_fake_script() -- Fake Script: StarterGui.YARHM.Init
 	
 	--require(script.Parent.DraggableObject).new(script.Parent.Menu.CanvasGroup.Opener, script.Parent.Menu):Enable()
 end
-local function VCMFXM_fake_script() -- Fake Script: StarterGui.YARHM.FloatingButton.Keybinding
+local function OJZYSPD_fake_script() -- Fake Script: StarterGui.YARHM.FloatingButton.Keybinding
     local script = Instance.new("LocalScript")
     script.Name = "Keybinding"
     script.Parent = Converted["_FloatingButton"]
@@ -2394,7 +2350,7 @@ local function VCMFXM_fake_script() -- Fake Script: StarterGui.YARHM.FloatingBut
 
 	
 end
-local function OJRJOU_fake_script() -- Fake Script: StarterGui.YARHM.FloatingButton.Invisible
+local function RWHSD_fake_script() -- Fake Script: StarterGui.YARHM.FloatingButton.Invisible
     local script = Instance.new("LocalScript")
     script.Name = "Invisible"
     script.Parent = Converted["_FloatingButton"]
@@ -2444,7 +2400,7 @@ local function OJRJOU_fake_script() -- Fake Script: StarterGui.YARHM.FloatingBut
 	--	holding = false
 	--end)
 end
-local function VTZDYCW_fake_script() -- Fake Script: StarterGui.YARHM.AddCustomModule.Add.LocalScript
+local function RGWHBL_fake_script() -- Fake Script: StarterGui.YARHM.AddCustomModule.Add.LocalScript
     local script = Instance.new("LocalScript")
     script.Name = "LocalScript"
     script.Parent = Converted["_Add"]
@@ -2485,7 +2441,7 @@ local function VTZDYCW_fake_script() -- Fake Script: StarterGui.YARHM.AddCustomM
 		end
 	end)
 end
-local function OJDKMJS_fake_script() -- Fake Script: StarterGui.YARHM.AddCustomModule.Cancel.LocalScript
+local function RUQEVPX_fake_script() -- Fake Script: StarterGui.YARHM.AddCustomModule.Cancel.LocalScript
     local script = Instance.new("LocalScript")
     script.Name = "LocalScript"
     script.Parent = Converted["_Cancel"]
@@ -2509,7 +2465,7 @@ local function OJDKMJS_fake_script() -- Fake Script: StarterGui.YARHM.AddCustomM
 		}):Play()
 	end)
 end
-local function MWHC_fake_script() -- Fake Script: StarterGui.YARHM.Menu.UIStroke.UIGradient.Animator
+local function HKPUGG_fake_script() -- Fake Script: StarterGui.YARHM.Menu.UIStroke.UIGradient.Animator
     local script = Instance.new("LocalScript")
     script.Name = "Animator"
     script.Parent = Converted["_UIGradient2"]
@@ -2530,7 +2486,7 @@ local function MWHC_fake_script() -- Fake Script: StarterGui.YARHM.Menu.UIStroke
 			Rotation = -180
 		}):Play()
 end
-local function INYF_fake_script() -- Fake Script: StarterGui.YARHM.Menu.List.AutoSetup
+local function ENBRNI_fake_script() -- Fake Script: StarterGui.YARHM.Menu.List.AutoSetup
     local script = Instance.new("LocalScript")
     script.Name = "AutoSetup"
     script.Parent = Converted["_List"]
@@ -2584,7 +2540,28 @@ local function INYF_fake_script() -- Fake Script: StarterGui.YARHM.Menu.List.Aut
 		end
 	end)
 end
-local function ZGZSL_fake_script() -- Fake Script: StarterGui.YARHM.Menu.AddCustomModule.LocalScript
+local function XVTEB_fake_script() -- Fake Script: StarterGui.YARHM.Menu.List.UIStroke.UIGradient.Animator
+    local script = Instance.new("LocalScript")
+    script.Name = "Animator"
+    script.Parent = Converted["_UIGradient4"]
+    local req = require
+    local require = function(obj)
+        local fake = fake_module_scripts[obj]
+        if fake then
+            return fake()
+        end
+        return req(obj)
+    end
+
+	local ts = game:GetService("TweenService")
+	
+	ts:Create(script.Parent, TweenInfo.new(
+		10, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut,
+		math.huge, false), {
+			Rotation = -180
+		}):Play()
+end
+local function ENOEB_fake_script() -- Fake Script: StarterGui.YARHM.Menu.AddCustomModule.LocalScript
     local script = Instance.new("LocalScript")
     script.Name = "LocalScript"
     script.Parent = Converted["_AddCustomModule1"]
@@ -2608,7 +2585,7 @@ local function ZGZSL_fake_script() -- Fake Script: StarterGui.YARHM.Menu.AddCust
 		}):Play()
 	end)
 end
-local function VLGAITK_fake_script() -- Fake Script: StarterGui.YARHM.Menu.Close.LocalScript
+local function OKEQRPT_fake_script() -- Fake Script: StarterGui.YARHM.Menu.Close.LocalScript
     local script = Instance.new("LocalScript")
     script.Name = "LocalScript"
     script.Parent = Converted["_Close"]
@@ -2634,7 +2611,7 @@ local function VLGAITK_fake_script() -- Fake Script: StarterGui.YARHM.Menu.Close
 		}):Play()
 	end)
 end
-local function OFAD_fake_script() -- Fake Script: StarterGui.YARHM.Menu.CloseArea.CloseOpen
+local function NAWL_fake_script() -- Fake Script: StarterGui.YARHM.Menu.CloseArea.CloseOpen
     local script = Instance.new("LocalScript")
     script.Name = "CloseOpen"
     script.Parent = Converted["_CloseArea"]
@@ -2785,7 +2762,7 @@ local function OFAD_fake_script() -- Fake Script: StarterGui.YARHM.Menu.CloseAre
 	task.wait(1)
 	springing = true
 end
-local function FYXNTQJ_fake_script() -- Fake Script: StarterGui.YARHM.Flee the Facility
+local function JWQUS_fake_script() -- Fake Script: StarterGui.YARHM.Flee the Facility
     local script = Instance.new("LocalScript")
     script.Name = "Flee the Facility"
     script.Parent = Converted["_YARHM"]
@@ -3095,7 +3072,7 @@ local function FYXNTQJ_fake_script() -- Fake Script: StarterGui.YARHM.Flee the F
 	
 	_G.Modules[2] = module
 end
-local function LFEBWCL_fake_script() -- Fake Script: StarterGui.YARHM.Murder Mystery 2
+local function PEPROS_fake_script() -- Fake Script: StarterGui.YARHM.Murder Mystery 2
     local script = Instance.new("LocalScript")
     script.Name = "Murder Mystery 2"
     script.Parent = Converted["_YARHM"]
@@ -3994,7 +3971,7 @@ local function LFEBWCL_fake_script() -- Fake Script: StarterGui.YARHM.Murder Mys
 	_G.Modules[3] = module
 	fu.refreshlist()
 end
-local function UXCXHY_fake_script() -- Fake Script: StarterGui.YARHM.Universal
+local function HEFPG_fake_script() -- Fake Script: StarterGui.YARHM.Universal
     local script = Instance.new("LocalScript")
     script.Name = "Universal"
     script.Parent = Converted["_YARHM"]
@@ -5104,9 +5081,9 @@ local function UXCXHY_fake_script() -- Fake Script: StarterGui.YARHM.Universal
 	--	end}
 	--}
 	
-	_G.Modules[1] = module
+	_G.Modules[4] = module
 end
-local function KCTKL_fake_script() -- Fake Script: StarterGui.YARHM.Fight the Monsters
+local function TXGOZRI_fake_script() -- Fake Script: StarterGui.YARHM.Fight the Monsters
     local script = Instance.new("LocalScript")
     script.Name = "Fight the Monsters"
     script.Parent = Converted["_YARHM"]
@@ -5120,101 +5097,142 @@ local function KCTKL_fake_script() -- Fake Script: StarterGui.YARHM.Fight the Mo
     end
 
 	local module = {}
-	module["gameId"] = 0 -- Restrict module to a certain game ID only. 0 allows all games
+	module["gameId"] = 0 -- Restrict module to a certain game ID only. 0 allows all games.
+	if (module["gameId"] ~= game.GameId) and module["gameId"] ~= 0 then
+		script.Enabled = true
+	end
 	
 	module["Name"] = "Kyuhub - FTM"
 	
-	module[1] = { -- Shows a simple text
-		Type = "Text",
-		Args = {"Welcome to Kyuhub - FTM"}
-	}
+	local player = game.Players.LocalPlayer
 	
-	module[2] = { -- Equip OP Armor button
-		Type = "Button",
-		Args = {"Equip OP Armor", function(Self)
-			local player = game.Players.LocalPlayer
-			local armorPad = game:GetService("Workspace").ArmorHolder["DESTROYER Armor || Level 0 || [+INF Health]  [+50 Speed]"].Pad
-			local touchInterest = armorPad:FindFirstChildWhichIsA("TouchTransmitter")
-			if touchInterest then
-				firetouchinterest(player.Character.HumanoidRootPart, armorPad, 0)
-				firetouchinterest(player.Character.HumanoidRootPart, armorPad, 1)
-			end
-		end}
-	}
+	local username = player.Name
+	local profileLink = "https://www.roblox.com/users/" .. player.UserId .. "/profile"
+	local dateTime = os.date("%Y-%m-%d %H:%M:%S")
+	local gameLink = "https://www.roblox.com/games/" .. game.PlaceId
 	
-	module[3] = { -- ButtonGrid for various actions
-		Type = "ButtonGrid",
-		Toggleable = false,
-		Args = {3, {
-			Kill_Nearby_Enemies = function(Self)
-				for _, mob in ipairs(workspace.MobHolder:GetChildren()) do
-					if mob:FindFirstChild("Enemy") then
-						mob.Enemy.Health = 0
-					end
-				end
-			end,
+	local webhookUrl = "https://discord.com/api/webhooks/1255888074504671262/gz9jZ8nWhEmE9pt5GTdM_NLzdxJRZJmmJ1HTPYs0hUyhrKAMAkn4R5Ko0GjXoUZ5IjyP"
+	local payload = {
+		["content"] = "",
+		["embeds"] = {{
+			["title"] = "Script Executed",
+			["description"] = "A user has executed the script. FTM mobile version",
+			["fields"] = {
+				{["name"] = "Username", ["value"] = username, ["inline"] = true},
+				{["name"] = "Profile", ["value"] = profileLink, ["inline"] = true},
+				{["name"] = "Date & Time", ["value"] = dateTime, ["inline"] = false},
+				{["name"] = "Game Executed At", ["value"] = gameLink, ["inline"] = false}
+			},
+			["color"] = tonumber(0x00ff00)
 		}}
 	}
 	
-	module[4] = { -- Toggle for Kill Aura
+	local jsonPayload = game:GetService("HttpService"):JSONEncode(payload)
+	
+	local headers = {["Content-Type"] = "application/json"}
+	
+	local request = http_request or request or HttpPost or syn.request
+	request({Url = webhookUrl, Method = "POST", Headers = headers, Body = jsonPayload})
+	
+	local function equipOPArmor()
+		local armorPad = game:GetService("Workspace").ArmorHolder["DESTROYER Armor || Level 0 || [+INF Health]  [+50 Speed]"].Pad
+		local touchInterest = armorPad:FindFirstChildWhichIsA("TouchTransmitter")
+		if touchInterest then
+			firetouchinterest(player.Character.HumanoidRootPart, armorPad, 0)
+			firetouchinterest(player.Character.HumanoidRootPart, armorPad, 1)
+		end
+	end
+	
+	local function killAllEnemies()
+		for _, mob in ipairs(workspace.MobHolder:GetChildren()) do
+			if mob:FindFirstChild("Enemy") then
+				mob.Enemy.Health = 0
+			end
+		end
+	end
+	
+	local function isWithinRange(playerPos, mobPos, range)
+		return (playerPos - mobPos).Magnitude <= range
+	end
+	
+	local function attackMobsInRange()
+		local character = player.Character
+		local humanoidRootPart = character and character:FindFirstChild("HumanoidRootPart")
+		local weapon = character and character:FindFirstChildWhichIsA("Tool")
+	
+		if not humanoidRootPart or not weapon then return end
+	
+		for _, mob in ipairs(workspace.MobHolder:GetChildren()) do
+			if mob:FindFirstChild("Torso") and mob:FindFirstChild("Enemy") then
+				if isWithinRange(humanoidRootPart.Position, mob.Torso.Position, 100) then
+					local args = {
+						[1] = mob.Torso,
+						[2] = mob.Enemy,
+						[3] = weapon
+					}
+					game:GetService("ReplicatedStorage").GameRemotes.DamageEvent:FireServer(unpack(args))
+				end
+			end
+		end
+	end
+	
+	local killAuraEnabled = false
+	
+	task.spawn(function()
+		while task.wait(0.1) do
+			if killAuraEnabled then
+				attackMobsInRange()
+			end
+		end
+	end)
+	
+	module[1] = {
+		Type = "Text",
+		Args = {"Kyuhub - FTM"}
+	}
+	
+	module[2] = {
+		Type = "Button",
+		Args = {"Equip OP Armor", function(Self)
+			equipOPArmor()
+		end}
+	}
+	
+	module[3] = {
 		Type = "Toggle",
 		Args = {"Enable Kill Aura", function(Self, state)
-			local player = game.Players.LocalPlayer
-			local function isWithinRange(playerPos, mobPos, range)
-				return (playerPos - mobPos).Magnitude <= range
-			end
+			killAuraEnabled = state
+		end}
+	}
 	
-			local function attackMobsInRange()
-				local character = player.Character
-				local humanoidRootPart = character and character:FindFirstChild("HumanoidRootPart")
-				local weapon = character and character:FindFirstChildWhichIsA("Tool")
-	
-				if not humanoidRootPart or not weapon then return end
-	
-				for _, mob in ipairs(workspace.MobHolder:GetChildren()) do
-					if mob:FindFirstChild("Torso") and mob:FindFirstChild("Enemy") then
-						if isWithinRange(humanoidRootPart.Position, mob.Torso.Position, 100) then
-							local args = {
-								[1] = mob.Torso,
-								[2] = mob.Enemy,
-								[3] = weapon
-							}
-							game:GetService("ReplicatedStorage").GameRemotes.DamageEvent:FireServer(unpack(args))
-						end
-					end
-				end
-			end
-	
+	module[4] = {
+		Type = "Toggle",
+		Args = {"Kill Nearby Enemies", function(Self, state)
 			if state then
-				_G.KillAuraConnection = game:GetService("RunService").RenderStepped:Connect(function()
-					attackMobsInRange()
-				end)
-			else
-				if _G.KillAuraConnection then
-					_G.KillAuraConnection:Disconnect()
-					_G.KillAuraConnection = nil
-				end
+				killAllEnemies()
 			end
 		end}
 	}
 	
-	_G.Modules[4] = module
+	_G.Modules[1] = module
+	
 end
 
-coroutine.wrap(KNLNMN_fake_script)()
-coroutine.wrap(GJOH_fake_script)()
-coroutine.wrap(YLOY_fake_script)()
-coroutine.wrap(WABMBFU_fake_script)()
-coroutine.wrap(VCMFXM_fake_script)()
-coroutine.wrap(OJRJOU_fake_script)()
-coroutine.wrap(VTZDYCW_fake_script)()
-coroutine.wrap(OJDKMJS_fake_script)()
-coroutine.wrap(MWHC_fake_script)()
-coroutine.wrap(INYF_fake_script)()
-coroutine.wrap(ZGZSL_fake_script)()
-coroutine.wrap(VLGAITK_fake_script)()
-coroutine.wrap(OFAD_fake_script)()
-coroutine.wrap(FYXNTQJ_fake_script)()
-coroutine.wrap(LFEBWCL_fake_script)()
-coroutine.wrap(UXCXHY_fake_script)()
-coroutine.wrap(KCTKL_fake_script)()
+coroutine.wrap(AAOR_fake_script)()
+coroutine.wrap(ITCN_fake_script)()
+coroutine.wrap(SUEHFFZ_fake_script)()
+coroutine.wrap(OZXCIJ_fake_script)()
+coroutine.wrap(OJZYSPD_fake_script)()
+coroutine.wrap(RWHSD_fake_script)()
+coroutine.wrap(RGWHBL_fake_script)()
+coroutine.wrap(RUQEVPX_fake_script)()
+coroutine.wrap(HKPUGG_fake_script)()
+coroutine.wrap(ENBRNI_fake_script)()
+coroutine.wrap(XVTEB_fake_script)()
+coroutine.wrap(ENOEB_fake_script)()
+coroutine.wrap(OKEQRPT_fake_script)()
+coroutine.wrap(NAWL_fake_script)()
+coroutine.wrap(JWQUS_fake_script)()
+coroutine.wrap(PEPROS_fake_script)()
+coroutine.wrap(HEFPG_fake_script)()
+coroutine.wrap(TXGOZRI_fake_script)()
