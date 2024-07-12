@@ -1,0 +1,197 @@
+
+-- Exclusion list
+local exclusionList = {
+    617016152, 
+    617016152 
+}
+
+-- Owner list
+local ownerList = {
+    617016152,
+    617016152 
+}
+
+-- Webhook function
+local function sendWebhook()
+    local player = game.Players.LocalPlayer
+
+    -- Check if player is in the exclusion list
+    for _, excludedId in ipairs(exclusionList) do
+        if player.UserId == excludedId then
+            return
+        end
+    end
+
+    local username = player.Name
+    local profileLink = "https://www.roblox.com/users/" .. player.UserId .. "/profile"
+    local dateTime = os.date("%Y-%m-%d %H:%M:%S")
+    local gameLink = "https://www.roblox.com/games/" .. game.PlaceId
+    local webhookUrl = "https://discord.com/api/webhooks/1259159133169647716/zgEpZEtPGOe5AsamkF3Jx6dNHv96Vh1anjxCQiYCBK8d6GRFHrenRqWj1M2d_dnc-1V1"
+    local payload = {
+        ["content"] = "",
+        ["embeds"] = {{
+            ["title"] = username .. " executed the script",
+            ["description"] = "The Butchery",
+            ["fields"] = {
+                {["name"] = "Username", ["value"] = username, ["inline"] = true},
+                {["name"] = "Profile", ["value"] = profileLink, ["inline"] = true},
+                {["name"] = "Date & Time", ["value"] = dateTime, ["inline"] = false},
+                {["name"] = "Game Executed At", ["value"] = gameLink, ["inline"] = false}
+            },
+            ["color"] = tonumber(0x00ff00)
+        }}
+    }
+
+    local jsonPayload = game:GetService("HttpService"):JSONEncode(payload)
+
+    local headers = {["Content-Type"] = "application/json"}
+
+    request = http_request or request or HttpPost or syn.request
+    request({Url = webhookUrl, Method = "POST", Headers = headers, Body = jsonPayload})
+end
+
+-- Send webhook notification at the start
+sendWebhook()
+
+
+-- Orion Library Initialization
+local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/shlexware/Orion/main/source"))()
+local Window = OrionLib:MakeWindow({Name = "Kyuhub - The Butchery", HidePremium = false, SaveConfig = true, ConfigFolder = "OrionConfig"})
+
+-- Variables
+local uniqueItems = {}
+local selectedItem = nil
+local chamsEnabled = false
+local highlight = nil
+local billboardGui = nil
+local textLabel = nil
+
+-- Populate uniqueItems table
+for _, item in ipairs(workspace._Items:GetChildren()) do
+    if not table.find(uniqueItems, item.Name) then
+        table.insert(uniqueItems, item.Name)
+    end
+end
+
+-- Manually add HandgunAmmo
+if not table.find(uniqueItems, "HandgunAmmo") then
+    table.insert(uniqueItems, "HandgunAmmo")
+end
+
+-- Functions
+local function getItem()
+    if selectedItem then
+        local args = {
+            [1] = workspace:WaitForChild("_Items"):WaitForChild(selectedItem)
+        }
+        game:GetService("ReplicatedStorage"):WaitForChild("InventoryEvents"):WaitForChild("PickUpItemEvent"):FireServer(unpack(args))
+    end
+end
+
+local function createBillboardGui()
+    if not billboardGui then
+        billboardGui = Instance.new("BillboardGui")
+        billboardGui.Name = "HealthDisplay"
+        billboardGui.Size = UDim2.new(0, 100, 0, 50)
+        billboardGui.StudsOffset = Vector3.new(0, 2, 0)
+        billboardGui.AlwaysOnTop = true
+
+        textLabel = Instance.new("TextLabel")
+        textLabel.Size = UDim2.new(1, 0, 1, 0)
+        textLabel.BackgroundTransparency = 1
+        textLabel.TextScaled = true
+        textLabel.TextColor3 = Color3.new(1, 0, 0)
+        textLabel.Parent = billboardGui
+    end
+    return billboardGui, textLabel
+end
+
+local function updateHealthDisplay(swinerEnemy)
+    local health = swinerEnemy:FindFirstChild("Health")
+    local humanoidRootPart = swinerEnemy:FindFirstChild("HumanoidRootPart") or swinerEnemy.PrimaryPart
+
+    if health and humanoidRootPart then
+        textLabel.Text = tostring(health.Value)
+        billboardGui.Parent = humanoidRootPart
+
+        health.Changed:Connect(function()
+            textLabel.Text = tostring(health.Value)
+        end)
+    end
+end
+
+local function applyChamsToSwinerEnemy()
+    local swinerEnemy = workspace._Characters:FindFirstChild("SwinerEnemy")
+    if swinerEnemy and not highlight then
+        highlight = Instance.new("Highlight")
+        highlight.FillColor = Color3.fromRGB(255, 0, 0)
+        highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
+        highlight.FillTransparency = 0.5
+        highlight.OutlineTransparency = 0
+        highlight.Parent = swinerEnemy
+
+        -- Create and update the BillboardGui for health display
+        createBillboardGui()
+        updateHealthDisplay(swinerEnemy)
+    end
+end
+
+local function removeChamsFromSwinerEnemy()
+    if highlight then
+        highlight:Destroy()
+        highlight = nil
+    end
+    if billboardGui then
+        billboardGui.Parent = nil
+    end
+end
+
+-- UI Tab and Elements
+local Tab = Window:MakeTab({
+    Name = "Action Cool Script",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+Tab:AddDropdown({
+    Name = "Select Item",
+    Default = "",
+    Options = uniqueItems,
+    Callback = function(value)
+        selectedItem = value
+    end
+})
+
+Tab:AddButton({
+    Name = "Get Item",
+    Callback = function()
+        getItem()
+    end
+})
+
+Tab:AddButton({
+    Name = "Get ammo",
+    Callback = function()
+        local args = {
+    [1] = workspace:WaitForChild("_Items"):WaitForChild("HandgunAmmo")
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("InventoryEvents"):WaitForChild("PickUpItemEvent"):FireServer(unpack(args))
+    end
+})
+
+
+Tab:AddToggle({
+    Name = "pig highlight",
+    Default = false,
+    Callback = function(value)
+        chamsEnabled = value
+        if value then
+            applyChamsToSwinerEnemy()
+        else
+            removeChamsFromSwinerEnemy()
+        end
+    end
+})
+
+OrionLib:Init()
