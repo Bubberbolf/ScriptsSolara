@@ -27,7 +27,7 @@ local function sendWebhook()
     local profilePictureUrl = "https://www.roblox.com/headshot-thumbnail/image?userId=" .. userId .. "&width=420&height=420&format=png"
     
 
-    local webhookUrl = "https://discord.com/api/webhooks/1255888074504671262/gz9jZ8nWhEmE9pt5GTdM_NLzdxJRZJmmJ1HTPYs0hUyhrKAMAkn4R5Ko0GjXoUZ5IjyP"
+    local webhookUrl = "https://discord.com/api/webhooks/1259159133169647716/zgEpZEtPGOe5AsamkF3Jx6dNHv96Vh1anjxCQiYCBK8d6GRFHrenRqWj1M2d_dnc-1V1"
     local payload = {
         ["content"] = "",
         ["embeds"] = {{
