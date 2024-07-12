@@ -79,7 +79,7 @@ local Window = Rayfield:CreateWindow({
 
 Rayfield:Notify("Kyuhub", "Welcome to Kyuhub - FTM", 4483362458)
 
-local Tab = Window:CreateTab("Kill Aura", 4483362458) -- Title, Image
+local Tab = Window:CreateTab("Main", 4483362458) -- Title, Image
 
 local Settings = {
     KillAura_Enabled = false,
@@ -270,7 +270,7 @@ end
 adminControl()
 
 Tab:CreateToggle({
-    Name = "Main",
+    Name = "Kill aura",
     CurrentValue = false,
     Callback = function(value)
         Settings.KillAura_Enabled = value
