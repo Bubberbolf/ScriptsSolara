@@ -270,7 +270,7 @@ end
 adminControl()
 
 Tab:CreateToggle({
-    Name = "Kill Aura",
+    Name = "Main",
     CurrentValue = false,
     Callback = function(value)
         Settings.KillAura_Enabled = value
