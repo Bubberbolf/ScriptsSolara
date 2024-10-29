@@ -1,0 +1,693 @@
+-- Load OrionLib
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
+
+-- Replace with your specific parent path
+local randomEventsFolder = workspace:WaitForChild("Map"):WaitForChild("Client"):WaitForChild("RandomEvents")
+local player = game.Players.LocalPlayer
+local runService = game:GetService("RunService")
+local players = game:GetService("Players")
+local camera = workspace.CurrentCamera
+
+-- Create a BillboardGui template for event markers
+local function createBillboardGui()
+    local billboardGui = Instance.new("BillboardGui")
+    billboardGui.Size = UDim2.new(0, 300, 0, 150) -- Size of the GUI
+    billboardGui.StudsOffset = Vector3.new(0, 5, 0) -- Offset above the part
+    billboardGui.AlwaysOnTop = true
+    billboardGui.MaxDistance = 0 -- Ensure visibility regardless of distance
+    
+    -- Create a TextLabel for displaying information
+    local textLabel = Instance.new("TextLabel")
+    textLabel.Size = UDim2.new(1, 0, 1, 0) -- Fill the BillboardGui
+    textLabel.BackgroundTransparency = 1 -- Make the background transparent
+    textLabel.TextColor3 = Color3.new(1, 1, 1) -- White text
+    textLabel.TextScaled = true -- Scale text to fit
+    textLabel.Font = Enum.Font.SourceSansBold -- Enhance font readability
+    textLabel.Parent = billboardGui -- Parent the text label to the BillboardGui
+    
+    return billboardGui
+end
+
+local billboardGuis = {} -- Store BillboardGui references
+local displayEnabled = true -- Control flag for enabling/disabling display
+local espEnabled = false -- Control flag for enabling/disabling ESP
+local nearbyPlayerRange = 1700 -- Default range for nearby players
+local dangerCloseRange = 400 -- Default range for danger close players
+
+-- OrionLib UI setup to show current events
+local Window = OrionLib:MakeWindow({Name = "Goofy shit nigga script AR2 ", HidePremium = false, SaveConfig = true, ConfigFolder = "OrionTest"})
+
+-- Display Tab for Random Events
+local displayTab = Window:MakeTab({
+    Name = "Nearby Events",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+local currentEventsText = displayTab:AddLabel("Current Events: ")
+
+-- Players Tab for ESP and Range Controls
+local playersTab = Window:MakeTab({
+    Name = "Players",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+local nearbyPlayersText = playersTab:AddLabel("Players Nearby: 0")
+local dangerCloseText = playersTab:AddLabel("Players Danger Close: 0")
+local farPlayersText = playersTab:AddLabel("Players Far: 0")
+
+-- Slider for setting Nearby Player Range
+playersTab:AddSlider({
+    Name = "Nearby Player Range",
+    Min = 1,
+    Max = 4000,
+    Default = nearbyPlayerRange,
+    Color = Color3.fromRGB(255,255,255),
+    Increment = 1,
+    ValueName = "Studs",
+    Callback = function(value)
+        nearbyPlayerRange = value
+    end
+})
+
+displayTab:AddLabel(" Nearby Events ")
+
+displayTab:AddToggle({
+    Name = "Enable Events ESP",
+    Default = false,
+    Callback = function(value)
+        displayEnabled = value
+        for _, gui in ipairs(billboardGuis) do
+            gui.Enabled = displayEnabled -- Enable or disable each BillboardGui
+        end
+    end
+})
+-- Slider for setting Danger Close Range
+playersTab:AddSlider({
+    Name = "Danger Close Range",
+    Min = 1,
+    Max = 4000,
+    Default = dangerCloseRange,
+    Color = Color3.fromRGB(255,255,255),
+    Increment = 1,
+    ValueName = "Studs",
+    Callback = function(value)
+        dangerCloseRange = value
+    end
+})
+
+-- ESP LOGIC
+local espEnabled = true
+local directionalLinesEnabled = true  -- New variable to control directional lines
+
+local function esp(p)
+    local cr = p.Character or p.CharacterAdded:Wait()
+    local h = cr:WaitForChild("Humanoid")
+    local hrp = cr:WaitForChild("HumanoidRootPart")
+    local head = cr:WaitForChild("Head")
+    
+    -- Text for displaying information
+    local text = Drawing.new("Text")
+    text.Visible = false
+    text.Center = true
+    text.Outline = false
+    text.Font = 3
+    text.Size = 13
+    text.Transparency = 1
+    
+    -- Lines for indicating direction
+    local frontLine = Drawing.new("Line")
+    frontLine.Thickness = 2
+    frontLine.Color = Color3.fromRGB(0, 255, 0)  -- Green for front direction
+    frontLine.Visible = false
+
+    local backLine = Drawing.new("Line")
+    backLine.Thickness = 2
+    backLine.Color = Color3.fromRGB(255, 0, 0)  -- Red for back direction
+    backLine.Visible = false
+
+    local function getEquippedItems()
+        local equippedFolder = cr:FindFirstChild("Equipped")
+        if equippedFolder then
+            local items = {}
+            for _, item in ipairs(equippedFolder:GetChildren()) do
+                if item:IsA("Model") then
+                    table.insert(items, item.Name)
+                end
+            end
+            return #items > 0 and table.concat(items, ", ") or "Hands"
+        else
+            return "Hands"
+        end
+    end
+
+    local function updateESP()
+        local hrp_pos, hrp_onscreen = camera:WorldToViewportPoint(hrp.Position)
+        if hrp_onscreen and espEnabled then
+            -- Update text
+            local distance = (hrp.Position - player.Character.HumanoidRootPart.Position).Magnitude
+            local category
+            local color
+
+            if distance <= dangerCloseRange then
+                category = "Danger Close"
+                color = Color3.fromRGB(255, 0, 0)  -- Red
+            elseif distance <= nearbyPlayerRange then
+                category = "Nearby"
+                color = Color3.fromRGB(0, 255, 0)  -- Green
+            else
+                category = "Far"
+                color = Color3.fromRGB(26, 25, 25)  -- Grey
+            end
+
+            local equippedItems = getEquippedItems()
+            text.Position = Vector2.new(hrp_pos.X, hrp_pos.Y - 70)
+            text.Text = string.format("%s\n%s\n%.2f studs\n[%s]", p.Name, equippedItems, distance, category)
+            text.Color = color
+            text.Visible = true
+
+            -- Update front line (green) and back line (red) if directional lines are enabled
+            if directionalLinesEnabled then
+                local headPosition = camera:WorldToViewportPoint(head.Position)
+                local lookVector = head.CFrame.LookVector
+
+                -- Calculate front and back positions based on LookVector
+                local frontEnd = camera:WorldToViewportPoint(head.Position + (lookVector * 5))  -- Front line length
+                local backEnd = camera:WorldToViewportPoint(head.Position - (lookVector * 5))   -- Back line length
+
+                -- Update line positions
+                frontLine.From = Vector2.new(headPosition.X, headPosition.Y)
+                frontLine.To = Vector2.new(frontEnd.X, frontEnd.Y)
+                frontLine.Visible = true
+
+                backLine.From = Vector2.new(headPosition.X, headPosition.Y)
+                backLine.To = Vector2.new(backEnd.X, backEnd.Y)
+                backLine.Visible = true
+            else
+                frontLine.Visible = false
+                backLine.Visible = false
+            end
+        else
+            text.Visible = false
+            frontLine.Visible = false
+            backLine.Visible = false
+        end
+    end
+
+    local con1 = runService.RenderStepped:Connect(updateESP)
+    local con2 = cr.AncestryChanged:Connect(function(_, parent)
+        if not parent then
+            text:Remove()
+            frontLine:Remove()
+            backLine:Remove()
+            con1:Disconnect()
+            con2:Disconnect()
+        end
+    end)
+
+    local con3 = h.HealthChanged:Connect(function(v)
+        if v <= 0 then
+            text:Remove()
+            frontLine:Remove()
+            backLine:Remove()
+            con1:Disconnect()
+            con2:Disconnect()
+            con3:Disconnect()
+        end
+    end)
+end
+
+-- Manage adding ESP to new players
+local function playerAdded(p)
+    if p.Character then
+        esp(p)
+    end
+    p.CharacterAdded:Connect(function()
+        esp(p)
+    end)
+end
+
+for _, p in ipairs(players:GetPlayers()) do
+    if p ~= player then
+        playerAdded(p)
+    end
+end
+
+players.PlayerAdded:Connect(playerAdded)
+
+-- Toggle for enabling/disabling ESP
+playersTab:AddToggle({
+    Name = "Enable ESP",
+    Default = false,
+    Callback = function(value)
+        espEnabled = value
+    end
+})
+
+-- Toggle for enabling/disabling directional lines
+playersTab:AddToggle({
+    Name = "Directional Lines",
+    Default = true,
+    Callback = function(value)
+        directionalLinesEnabled = value
+    end
+})
+
+local zombieEspEnabled = false
+local zombieDistanceLimitEnabled = false
+local zombieHighlightEnabled = false
+local zombieEspDistanceLimit = 5000
+local zombieEspColor = Color3.fromRGB(128, 0, 128) -- Purple color for ESP text
+
+-- Table to store ESP connections for toggling off
+local zombieEspConnections = {}
+
+-- Function to create Zombie ESP
+local function createZombieESP(zombie)
+    local head = zombie:FindFirstChild("Head")
+    if not head then return end
+
+    local textLabel = Drawing.new("Text")
+    textLabel.Visible = false
+    textLabel.Center = true
+    textLabel.Outline = true
+    textLabel.Font = 3
+    textLabel.Size = 16
+    textLabel.Color = zombieEspColor
+
+    local function updateZombieESP()
+        if not zombieEspEnabled then
+            textLabel.Visible = false
+            return
+        end
+
+        local playerPos = player.Character and player.Character:FindFirstChild("HumanoidRootPart").Position
+        if playerPos then
+            local distance = (playerPos - head.Position).Magnitude
+            local screenPos, onScreen = camera:WorldToViewportPoint(head.Position)
+
+            if onScreen and ((not zombieDistanceLimitEnabled) or (distance <= zombieEspDistanceLimit)) then
+                textLabel.Position = Vector2.new(screenPos.X, screenPos.Y - 25)
+                textLabel.Text = string.format("%s\n%.2f studs\n[Mobs]", zombie.Name, distance)
+                textLabel.Visible = true
+            else
+                textLabel.Visible = false
+            end
+        end
+    end
+
+    local zombieEspConnection = runService.RenderStepped:Connect(updateZombieESP)
+
+    zombie.AncestryChanged:Connect(function()
+        textLabel:Remove()
+        zombieEspConnection:Disconnect()
+    end)
+
+    table.insert(zombieEspConnections, {textLabel = textLabel, connection = zombieEspConnection})
+end
+
+local function applyZombieHighlight(zombie)
+    if zombie:FindFirstChildOfClass("Highlight") then
+        zombie:FindFirstChildOfClass("Highlight"):Destroy()
+    end
+    local highlight = Instance.new("Highlight")
+    highlight.Adornee = zombie
+    highlight.FillColor = zombieEspColor
+    highlight.FillTransparency = 0.5
+    highlight.OutlineColor = zombieEspColor
+    highlight.Parent = zombie
+end
+
+local function toggleZombieESP()
+    if not zombieEspEnabled then
+        for _, espData in ipairs(zombieEspConnections) do
+            espData.textLabel:Remove()
+            espData.connection:Disconnect()
+        end
+        zombieEspConnections = {}
+        return
+    end
+
+    for _, zombie in pairs(workspace.Zombies.Mobs:GetChildren()) do
+        if zombie:IsA("Model") and string.sub(zombie.Name, 1, 6) == "Unique" then
+            createZombieESP(zombie)
+            if zombieHighlightEnabled then
+                applyZombieHighlight(zombie)
+            end
+        end
+    end
+end
+
+-- Add Zombie ESP Tab to OrionLib
+local zombieEspTab = Window:MakeTab({
+    Name = "Zombie ESP",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+zombieEspTab:AddToggle({
+    Name = "ESP All Rare Zombies",
+    Default = false,
+    Callback = function(value)
+        zombieEspEnabled = value
+        toggleZombieESP()
+    end
+})
+
+zombieEspTab:AddToggle({
+    Name = "ESP Within Certain Distance",
+    Default = false,
+    Callback = function(value)
+        zombieDistanceLimitEnabled = value
+    end
+})
+
+zombieEspTab:AddSlider({
+    Name = "ESP Radius",
+    Min = 1,
+    Max = 5000,
+    Default = 5000,
+    Callback = function(value)
+        zombieEspDistanceLimit = value
+    end
+})
+
+zombieEspTab:AddToggle({
+    Name = "Cham Zombies",
+    Default = false,
+    Callback = function(value)
+        zombieHighlightEnabled = value
+        toggleZombieESP()
+    end
+})
+
+-- Function to find a valid part to attach the BillboardGui
+local function findValidPart(eventModel)
+    local core = eventModel:FindFirstChild("Core")
+    if core and core:IsA("Model") then
+        local meshPart = core:FindFirstChild("MeshPart")
+        if meshPart and meshPart:IsA("BasePart") then
+            return meshPart
+        end
+    end
+    for _, descendant in ipairs(eventModel:GetDescendants()) do
+        if descendant:IsA("BasePart") then
+            return descendant
+        end
+    end
+    return nil
+end
+
+-- Function to update the TextLabel and OrionLib UI with direct children names and distances
+local function updateDisplay()
+    if not displayEnabled then return end  -- Early exit if not enabled
+
+    local playerPosition = player.Character and player.Character:FindFirstChild("HumanoidRootPart") and player.Character.HumanoidRootPart.Position
+    if not playerPosition then return end
+
+    local eventNames = {}
+    local hasData = false
+
+    -- Clear previous BillboardGui instances
+    for _, gui in ipairs(billboardGuis) do
+        gui:Destroy()
+    end
+    billboardGuis = {}
+
+    -- Iterate through each direct child in the RandomEvents folder
+    for _, child in ipairs(randomEventsFolder:GetChildren()) do
+        table.insert(eventNames, child.Name)
+
+        local targetPart = findValidPart(child)
+        if targetPart then
+            local billboardGui = createBillboardGui()
+            billboardGui.Adornee = targetPart
+            billboardGui.Parent = targetPart.Parent
+            billboardGui.Enabled = displayEnabled -- Set the initial visibility based on the toggle
+
+            table.insert(billboardGuis, billboardGui)
+
+            local partPosition = targetPart.Position
+            local distanceXZ = (Vector2.new(partPosition.X, partPosition.Z) - Vector2.new(playerPosition.X, playerPosition.Z)).Magnitude
+            local textLabel = billboardGui:FindFirstChildOfClass("TextLabel")
+            if textLabel then
+                textLabel.Text = string.format("Name: %s\nDistance: %.2f studs", child.Name, distanceXZ)
+            end
+            hasData = true
+        end
+    end
+
+    if #eventNames > 0 then
+        local orionText = "Current Events:\n" .. table.concat(eventNames, "\n")
+        currentEventsText:Set(orionText)
+    else
+        currentEventsText:Set("Current Events: None")
+    end
+end
+-- Function to get categorized player counts
+local function getCategorizedPlayerCounts()
+    local nearbyPlayers = 0
+    local dangerClose = 0
+    local farPlayers = 0
+    local playerPosition = player.Character and player.Character:FindFirstChild("HumanoidRootPart") and player.Character.HumanoidRootPart.Position
+
+    if playerPosition then
+        for _, otherPlayer in pairs(players:GetPlayers()) do
+            if otherPlayer ~= player and otherPlayer.Character and otherPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                local distance = (otherPlayer.Character.HumanoidRootPart.Position - playerPosition).Magnitude
+                if distance <= dangerCloseRange then
+                    dangerClose += 1
+                elseif distance <= nearbyPlayerRange then
+                    nearbyPlayers += 1
+                else
+                    farPlayers += 1
+                end
+            end
+        end
+    end
+
+    -- Update OrionLib labels
+    nearbyPlayersText:Set("Players Nearby: " .. tostring(nearbyPlayers))
+    dangerCloseText:Set("Players Danger Close: " .. tostring(dangerClose))
+    farPlayersText:Set("Players Far: " .. tostring(farPlayers))
+end
+
+-- Connect update functions
+runService.RenderStepped:Connect(updateDisplay)
+runService.RenderStepped:Connect(getCategorizedPlayerCounts)
+
+local ESPEnabled = false
+local ESPTexts = {}
+local SelectedEvent = nil  -- Variable to store the selected event
+
+-- Array of Events for ESP
+local ESPArray = {
+    "StashWeaponMid02", "CrashPrisonBus01", "PumpkinSpawnerCommon01", "StashFood02", "ParamedicScene01", "PoliceBlockade01",
+    "RandomWizard01", "RandomFreddy01", "RandomChestHalloween01", "GraveFresh01", "CoffinVampire01", "RandomWizard01",
+    "RandomWitch01", "BankTruckRobbery01", "C-123ProviderMilitary01", "PoolsClosed01", "RandomNinja01", "SeahawkCrashsite06",
+    "RandomFreddy01", "StashWeaponMid03", "GraveFresh01", "SeahawkCrashsiteRogue01", "StashWeaponHigh03", "RandomFrankenstein01",
+    "CoffinVampire01", "StashMedical02", "PumpkinSpawnerCommon01", "PartyTrailerTechnoGold", "GraveFresh01", "RandomNinja01",
+    "HeartChamber01", "ConstructionWorksite01", "MilitaryConvoy01", "RandomFrankenstein01", "PumpkinSpawnerCommon01",
+    "PumpkinSpawnerCommon01", "PumpkinSpawnerCommon01", "StashFood03", "MilitaryBlockade01", "StashWeaponMid03",
+    "SpecialForcesCrash01", "GraveFresh01", "RandomNinja01", "PumpkinSpawnerSpecial01", "BeachedAluminumBoat01",
+    "PirateTreasure01", "SummoningCircle02", "RandomFrankenstein01", "RandomChestHalloween01", "PopupCampsite01",
+    "GraveFresh01", "RandomWitch01", "StashGeneral02", "PopupFishing01", "PoliceBlockade01", "RandomCoffinSkeleton01",
+    "ATVCrashsiteRenegade01", "RandomCoffinSkeleton01", "PopupCampsite01", "SeahawkCrashsite05", "StashWeaponMid02",
+    "StashFood02", "StrandedStationKeyboard01", "RandomFreddy01", "RandomWitch01", "BeachedAluminumBoat01",
+    "StashWeaponHigh03", "SummoningCircle01", "SedanHaul01", "StashMedical03", "CoffinVampire01", "FuneralProcession01",
+    "RandomWizard01", "RandomCoffinSkeleton01", "DemonHunter01", "StashMedical03"
+}
+
+-- Sort ESPArray alphabetically
+table.sort(ESPArray)
+
+-- Function to toggle ESP for all events
+local function toggleESP(state)
+    ESPEnabled = state
+
+    -- Clear previous ESP drawings
+    for _, text in pairs(ESPTexts) do
+        text:Remove()
+    end
+    ESPTexts = {}
+
+    if ESPEnabled then
+        for _, event in pairs(workspace.Map.Shared.LootBins:GetChildren()) do
+            if table.find(ESPArray, event.Name) then
+                -- Find the Group and Part
+                local group = event:FindFirstChild("Group")
+                if group then
+                    local part = group:FindFirstChild("Part")
+                    if part then
+                        local text = Drawing.new("Text")
+                        text.Text = string.format("%s\n%.2f studs\n[Event]", event.Name, (part.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude)
+                        text.Size = 13
+                        text.Center = true
+                        text.Color = Color3.new(1, 1, 0)  -- Yellow color
+                        text.Outline = true
+                        text.Visible = true
+
+                        -- Dynamic distance calculation
+                        game:GetService("RunService").RenderStepped:Connect(function()
+                            if ESPEnabled and part then
+                                local screenPos, onScreen = workspace.CurrentCamera:WorldToViewportPoint(part.Position)
+                                if onScreen then
+                                    local distance = (part.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+                                    text.Text = string.format("%s\n%.2f studs\n[Event]", event.Name, distance)
+                                    text.Position = Vector2.new(screenPos.X, screenPos.Y)
+                                    text.Visible = true
+                                else
+                                    text.Visible = false
+                                end
+                            else
+                                text.Visible = false
+                            end
+                        end)
+
+                        table.insert(ESPTexts, text)
+                    else
+                        -- Trigger notification if Part is not found
+                        OrionLib:MakeNotification({
+                            Name = "Useless Event",
+                            Content = string.format("The event '%s' is either USELESS or is not spawned by the server", event.Name),
+                            Time = 10,
+                            Icon = "rbxassetid://4483345998"
+                        })
+                    end
+                else
+                    -- Trigger notification if Group is not found
+                    OrionLib:MakeNotification({
+                        Name = "Useless Event",
+                        Content = string.format("The event '%s' is either USELESS or is not spawned by the server", event.Name),
+                        Time = 10,
+                        Icon = "rbxassetid://4483345998"
+                    })
+                end
+            end
+        end
+    end
+end
+
+-- Function to toggle ESP for a specific event
+local function toggleSpecificEventESP()
+    if SelectedEvent then
+        ESPEnabled = true
+        -- Clear previous ESP drawings
+        for _, text in pairs(ESPTexts) do
+            text:Remove()
+        end
+        ESPTexts = {}
+
+        -- Look for the specific event
+        for _, event in pairs(workspace.Map.Shared.LootBins:GetChildren()) do
+            if event.Name == SelectedEvent then
+                -- Find the Group and Part
+                local group = event:FindFirstChild("Group")
+                if group then
+                    local part = group:FindFirstChild("Part")
+                    if part then
+                        local text = Drawing.new("Text")
+                        text.Text = string.format("%s\n%.2f studs\n[Event]", event.Name, (part.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude)
+                        text.Size = 13
+                        text.Center = true
+                        text.Color = Color3.new(1, 1, 0)
+                        text.Outline = true
+                        text.Visible = true
+
+                        -- Dynamic distance calculation
+                        game:GetService("RunService").RenderStepped:Connect(function()
+                            if ESPEnabled and part then
+                                local screenPos, onScreen = workspace.CurrentCamera:WorldToViewportPoint(part.Position)
+                                if onScreen then
+                                    local distance = (part.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+                                    text.Text = string.format("%s\n%.2f studs\n[Event]", event.Name, distance)
+                                    text.Position = Vector2.new(screenPos.X, screenPos.Y)
+                                    text.Visible = true
+                                else
+                                    text.Visible = false
+                                end
+                            else
+                                text.Visible = false
+                            end
+                        end)
+
+                        table.insert(ESPTexts, text)
+                    else
+                        -- Trigger notification if Part is not found
+                        OrionLib:MakeNotification({
+                            Name = "Useless Event",
+                            Content = string.format("The event '%s' is either USELESS or is not spawned by the server", event.Name),
+                            Time = 10,
+                            Icon = "rbxassetid://4483345998"
+                        })
+                    end
+                else
+                    -- Trigger notification if Group is not found
+                    OrionLib:MakeNotification({
+                        Name = "Useless Event",
+                        Content = string.format("The event '%s' is either USELESS or is not spawned by the server", event.Name),
+                        Time = 10,
+                        Icon = "rbxassetid://4483345998"
+                    })
+                end
+            end
+        end
+    end
+end
+
+-- Display Tab
+local DisplayTab = Window:MakeTab({Name = "All Events", Icon = "rbxassetid://4483345998", PremiumOnly = false})
+
+-- Toggle Button for All Events
+DisplayTab:AddToggle({
+    Name = "ESP ALL EVENTS IN SERVER",
+    Default = false,
+    Callback = function(state)
+        toggleESP(state)
+    end
+})
+
+-- Button for Specific Event
+DisplayTab:AddButton({
+    Name = "ESP Specific Event",
+    Callback = toggleSpecificEventESP
+})
+
+-- Dropdown for Specific Event Selection
+DisplayTab:AddDropdown({
+    Name = "Select Specific Event",
+    Default = "All",
+    Options = ESPArray,
+    Callback = function(selected)
+        SelectedEvent = selected
+    end
+})
+
+local Localtao = Window:MakeTab({
+    Name = "Local Player",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+Localtao:AddButton({
+    Name = "Self Chams",
+    Callback = function()
+        -- Check if the local player character exists
+        local character = game.Players.LocalPlayer.Character
+        if character then
+            -- Apply the ForceField material to each part of the character
+            for _, part in ipairs(character:GetDescendants()) do
+                if part:IsA("BasePart") then
+                    part.Material = Enum.Material.ForceField
+                end
+            end
+        else
+            print("Character not found.")
+        end
+    end
+})
+
+-- Initialize OrionLib
+OrionLib:Init()
+
