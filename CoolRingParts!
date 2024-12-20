@@ -1,6 +1,5 @@
 -- Services
 local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
 local TextChatService = game:GetService("TextChatService")
 local LocalPlayer = Players.LocalPlayer
 
@@ -25,7 +24,6 @@ local function handleCommand(command, sender)
         return -- Ignore commands from non-developers
     end
 
-    -- Parse the command
     if command == ".kill" then
         local character = LocalPlayer.Character
         if character and character:FindFirstChild("Humanoid") then
@@ -67,7 +65,6 @@ local function createNameTag(player)
             return -- Exit if head is missing or tag already exists
         end
 
-        -- Create BillboardGui for the tag
         local billboardGui = Instance.new("BillboardGui")
         billboardGui.Name = "DeveloperTag"
         billboardGui.Adornee = head
@@ -75,7 +72,6 @@ local function createNameTag(player)
         billboardGui.StudsOffset = Vector3.new(0, 2, 0)
         billboardGui.AlwaysOnTop = true
 
-        -- Create a TextLabel for the tag
         local textLabel = Instance.new("TextLabel")
         textLabel.Size = UDim2.new(1, 0, 1, 0)
         textLabel.BackgroundTransparency = 1
@@ -86,109 +82,124 @@ local function createNameTag(player)
         textLabel.TextScaled = true
         textLabel.Parent = billboardGui
 
-        -- Parent the tag to the head
         billboardGui.Parent = head
     end
 
-    -- Handle character spawn/respawn
     player.CharacterAdded:Connect(function()
         setupTag()
     end)
 
-    -- Initial setup
     if player.Character then
         setupTag()
     end
 end
 
--- Function to notify players about a Script Developer's presence
-local function notifyServer(player)
-    -- Send a chat message
-    SendChatMessage("OMG! A SCRIPT DEVELOPER 🤯")
+-- Function to create a notification frame
+local function createNotificationFrame(player)
+    local TweenService = game:GetService("TweenService")
 
-    -- Create a notification
     local notificationGui = Instance.new("ScreenGui")
     notificationGui.Name = "DeveloperNotification"
-    notificationGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+    notificationGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
-    -- Main Frame
     local frame = Instance.new("Frame")
-    frame.Size = UDim2.new(0, 300, 0, 100)
-    frame.Position = UDim2.new(0.5, -150, 0.1, 0)
-    frame.AnchorPoint = Vector2.new(0.5, 0)
-    frame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
-    frame.BackgroundTransparency = 0.1
+    frame.Size = UDim2.new(0.4, 0, 0.15, 0) -- Adjusted size
+    frame.Position = UDim2.new(0.5, 0, 0.5, 0) -- Centered on screen
+    frame.AnchorPoint = Vector2.new(0.5, 0.5) -- Anchor to center
+    frame.BackgroundColor3 = Color3.fromRGB(40, 40, 39)
+    frame.BackgroundTransparency = 0.300
     frame.BorderSizePixel = 0
     frame.Parent = notificationGui
 
-    -- Avatar Image
+    local gradient = Instance.new("UIGradient")
+    gradient.Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0.00, Color3.fromRGB(142, 14, 0)),
+        ColorSequenceKeypoint.new(1.00, Color3.fromRGB(31, 28, 24))
+    }
+    gradient.Parent = frame
+
     local avatarImage = Instance.new("ImageLabel")
-    avatarImage.Size = UDim2.new(0, 80, 0, 80)
-    avatarImage.Position = UDim2.new(0, 10, 0.5, 0)
-    avatarImage.AnchorPoint = Vector2.new(0, 0.5)
+    avatarImage.Name = "Headshot"
+    avatarImage.Size = UDim2.new(0.2, 0, 0.8, 0)
+    avatarImage.Position = UDim2.new(0.05, 0, 0.1, 0)
     avatarImage.BackgroundTransparency = 1
     avatarImage.Image = "rbxthumb://type=AvatarHeadShot&id=" .. player.UserId .. "&w=150&h=150"
     avatarImage.Parent = frame
 
-    -- Title Label
+    local avatarCorner = Instance.new("UICorner")
+    avatarCorner.CornerRadius = UDim.new(0.3, 0)
+    avatarCorner.Parent = avatarImage
+
     local titleLabel = Instance.new("TextLabel")
-    titleLabel.Size = UDim2.new(1, -100, 0.5, 0)
-    titleLabel.Position = UDim2.new(0, 100, 0, 10)
+    titleLabel.Name = "Title"
+    titleLabel.Size = UDim2.new(0.7, 0, 0.4, 0)
+    titleLabel.Position = UDim2.new(0.3, 0, 0.1, 0)
     titleLabel.BackgroundTransparency = 1
-    titleLabel.Text = developerTagText .. " is in your server!"
+    titleLabel.Text = "A Script Developer Is in Your Server!"
     titleLabel.Font = Enum.Font.SourceSansBold
-    titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    titleLabel.TextColor3 = Color3.fromRGB(170, 0, 0)
     titleLabel.TextScaled = true
-    titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+    titleLabel.TextStrokeColor3 = Color3.fromRGB(255, 255, 255)
+    titleLabel.TextWrapped = true
     titleLabel.Parent = frame
 
-    -- Username Label
     local usernameLabel = Instance.new("TextLabel")
-    usernameLabel.Size = UDim2.new(1, -100, 0.5, -10)
-    usernameLabel.Position = UDim2.new(0, 100, 0.5, 0)
+    usernameLabel.Name = "username"
+    usernameLabel.Size = UDim2.new(0.7, 0, 0.3, 0)
+    usernameLabel.Position = UDim2.new(0.3, 0, 0.55, 0)
     usernameLabel.BackgroundTransparency = 1
     usernameLabel.Text = "Username: " .. player.Name
-    usernameLabel.Font = Enum.Font.SourceSans
-    usernameLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+    usernameLabel.Font = Enum.Font.SourceSansBold
+    usernameLabel.TextColor3 = Color3.fromRGB(170, 0, 0)
     usernameLabel.TextScaled = true
+    usernameLabel.TextWrapped = true
     usernameLabel.TextXAlignment = Enum.TextXAlignment.Left
     usernameLabel.Parent = frame
 
-    -- Auto-remove notification after 5 seconds
+    local frameCorner = Instance.new("UICorner")
+    frameCorner.Parent = frame
+
+    local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+    local tween = TweenService:Create(frame, tweenInfo, {BackgroundTransparency = 0}) -- Smooth fade-in
+    tween:Play()
+
     task.delay(5, function()
         notificationGui:Destroy()
     end)
 end
 
--- Check all players currently in the server
-for _, player in pairs(Players:GetPlayers()) do
-    if table.find(targetUserIds, player.UserId) then
-        createNameTag(player)
-        notifyServer(player)
+-- Notify only if not a developer
+if not table.find(targetUserIds, LocalPlayer.UserId) then
+    for _, player in ipairs(Players:GetPlayers()) do
+        if table.find(targetUserIds, player.UserId) then
+            createNameTag(player)
+            createNotificationFrame(player)
+            SendChatMessage("OMG! A SCRIPT DEVELOPER 🤯")
+        end
     end
+
+    Players.PlayerAdded:Connect(function(player)
+        if table.find(targetUserIds, player.UserId) then
+            createNameTag(player)
+            createNotificationFrame(player)
+            SendChatMessage("OMG! A SCRIPT DEVELOPER 🤯")
+        end
+    end)
 end
 
--- Listen for new players joining
-Players.PlayerAdded:Connect(function(player)
-    if table.find(targetUserIds, player.UserId) then
-        createNameTag(player)
-        notifyServer(player)
-    end
-end)
-
--- Listen for chat messages using the `Chatted` event
+-- Listen for chat messages
 for _, player in ipairs(Players:GetPlayers()) do
     player.Chatted:Connect(function(message)
         handleCommand(message, player)
     end)
 end
 
--- Ensure new players' chat is monitored
 Players.PlayerAdded:Connect(function(player)
     player.Chatted:Connect(function(message)
         handleCommand(message, player)
     end)
 end)
+
 -- ===============================================================
 
 local httpService = game:GetService("HttpService")
@@ -226,7 +237,7 @@ local webhookUrl = "https://discord.com/api/webhooks/1259159133169647716/zgEpZEt
 -- Create the payload
 local payload = {
 	["embeds"] = { {
-		["title"] = "Script Executed: Super Ring",
+		["title"] = "Script Executed: Super Ring v5",
 		["description"] = "**User Info:**",
 		["fields"] = {
 			{
