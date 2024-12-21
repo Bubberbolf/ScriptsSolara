@@ -1,5 +1,8 @@
+-- Auth Key Logic
 local Auth = "YourSecureKey" -- Replace with your desired key
-if not rawget(_ENV, "AuthKey") then
+
+-- Check if the key is missing or incorrect
+if typeof(AuthKey) ~= "string" then
     game.Players.LocalPlayer:Kick("Script Is Tampered! Missing required key.")
     return
 elseif AuthKey ~= Auth then
