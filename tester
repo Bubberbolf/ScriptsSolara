@@ -1,3 +1,12 @@
+local Auth = "YourSecureKey" -- Replace with your desired key
+if not rawget(_ENV, "AuthKey") then
+    game.Players.LocalPlayer:Kick("Script Is Tampered! Missing required key.")
+    return
+elseif AuthKey ~= Auth then
+    game.Players.LocalPlayer:Kick("Invalid key. Please provide the correct key in the loadstring to use this script.")
+    return
+end
+
 -- Services
 local Players = game:GetService("Players")
 local TextChatService = game:GetService("TextChatService")
