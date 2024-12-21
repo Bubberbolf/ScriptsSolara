@@ -1,12 +1,8 @@
--- Auth Key Logic
 local Auth = "YourSecureKey" -- Replace with your desired key
 
--- Check if the key is missing or incorrect
-if typeof(AuthKey) ~= "string" then
-    game.Players.LocalPlayer:Kick("Script Is Tampered! Missing required key.")
-    return
-elseif AuthKey ~= Auth then
-    game.Players.LocalPlayer:Kick("Invalid key. Please provide the correct key in the loadstring to use this script.")
+-- Check if AuthKey exists and matches the Auth key
+if not (AuthKey and AuthKey == Auth) then
+    game.Players.LocalPlayer:Kick("Script Is Tampered! Missing or invalid key.")
     return
 end
 
