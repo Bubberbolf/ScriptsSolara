@@ -1,10 +1,11 @@
-local Auth = "YourSecureKey" -- Replace with your desired key
+return function(ProvidedKey)
+    local Auth = "YourSecureKey" 
 
--- Check if AuthKey exists and matches the Auth key
-if not (AuthKey and AuthKey == Auth) then
-    game.Players.LocalPlayer:Kick("Script Is Tampered! Missing or invalid key.")
-    return
-end
+    -- Check if the provided key matches
+    if not ProvidedKey or ProvidedKey ~= Auth then
+        game.Players.LocalPlayer:Kick("Script Is Tampered! Missing or invalid key.")
+        return
+    end
 
 -- Services
 local Players = game:GetService("Players")
@@ -937,3 +938,5 @@ end
 -- Send the chat message
 SendChatMessage("Super Ring Parts Projeto LKB Executed! ✨")
 SendChatMessage("Modified by KYUU and Uploaded to Scriptblox!")
+
+end
